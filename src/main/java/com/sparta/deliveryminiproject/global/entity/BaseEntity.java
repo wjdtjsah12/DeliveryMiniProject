@@ -21,11 +21,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @EntityListeners(AuditingEntityListener.class)
 public abstract class BaseEntity {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(updatable = false, nullable = false)
-  private Long id;
-
   @CreatedDate
   @Column(updatable = false, nullable = false)
   @Temporal(TemporalType.TIMESTAMP)
