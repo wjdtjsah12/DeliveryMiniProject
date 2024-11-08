@@ -36,7 +36,4 @@ public abstract class Timestamped {
   @Column(nullable = false, length = 100)
   private String updatedBy;
 
-  @Column(nullable = false)
-  private Boolean isDeleted = false;
-
 }
