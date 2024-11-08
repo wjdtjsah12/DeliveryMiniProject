@@ -16,7 +16,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Getter
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
-public abstract class Timestamped {
+public abstract class BaseEntity {
 
   @CreatedDate
   @Column(updatable = false, nullable = false)
@@ -35,5 +35,8 @@ public abstract class Timestamped {
   @LastModifiedBy
   @Column(nullable = false, length = 100)
   private String updatedBy;
+
+  @Column(nullable = false)
+  private Boolean isDeleted = false;
 
 }
