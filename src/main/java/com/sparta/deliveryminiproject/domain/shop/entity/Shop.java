@@ -5,14 +5,21 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import java.util.UUID;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "p_shop")
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class Shop {
 
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
-  private Long id;
+  private UUID id;
 
   private String shopName;
 
@@ -22,4 +29,10 @@ public class Shop {
 
   private int deliveryTip;
 
+  public Shop(String shopName, String description, int minDeliveryPrice, int deliveryTip) {
+    this.shopName = shopName;
+    this.description = description;
+    this.minDeliveryPrice = minDeliveryPrice;
+    this.deliveryTip = deliveryTip;
+  }
 }
