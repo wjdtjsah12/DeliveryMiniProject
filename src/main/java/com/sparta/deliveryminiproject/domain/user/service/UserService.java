@@ -11,6 +11,7 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -27,11 +28,35 @@ public class UserService {
 
     Optional<User> checkUsername = userRepository.findByUsername(username);
     if (checkUsername.isPresent()) {
-      throw new IllegalArgumentException("Duplicate username found");
+      throw new IllegalArgumentException("Duplicate Username Found");
     }
 
-    // TODO: 권한
-    User user = new User(username, password, UserRoleEnum.MANAGER);
+    User user = new User(username, password, UserRoleEnum.CUSTOMER);
     userRepository.save(user);
+  }
+
+  public void signin(SigninRequestDto requestDto, HttpServletResponse response) {
+
+    String username = requestDto.getUsername();
+    String password = requestDto.getPassword();
+
+    User user = userRepository.findByUsername(username).orElseThrow(
+        () -> new IllegalArgumentException("Invalid Username")
+    );
+
+    if (!passwordEncoder.matches(password, user.getPassword())) {
+      throw new IllegalArgumentException("Invalid Password");
+    }
+
+    String token = jwtUtil.createToken(username, user.getRole());
+    jwtUtil.addJwtToCookie(token, response);
+  }
+
+  @Transactional
+  public void updateRole(User user, UserRoleEnum role) {
+    User savedUser = userRepository.findByUsername(user.getUsername())
+        .orElseThrow(() -> new RuntimeException("User not found"));
+
+    savedUser.setRole(role);
   }
 }
