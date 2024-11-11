@@ -40,6 +40,7 @@ public class UserController {
   public void users(@AuthenticationPrincipal UserDetailsImpl userDetails) {
     System.out.println(
         "current signed user & role : " + userDetails.getUsername() + userDetails.getAuthorities());
+
   }
 
   @ExceptionHandler({IllegalArgumentException.class})
