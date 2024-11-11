@@ -55,7 +55,7 @@ public class UserService {
   @Transactional
   public void updateRole(User user, UserRoleEnum role) {
     User savedUser = userRepository.findByUsername(user.getUsername())
-        .orElseThrow(() -> new RuntimeException("User not found"));
+        .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
     savedUser.setRole(role);
   }
