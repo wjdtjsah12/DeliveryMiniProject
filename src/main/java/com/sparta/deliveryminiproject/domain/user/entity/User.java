@@ -15,7 +15,6 @@ import lombok.Setter;
 
 @Entity
 @Getter
-@Setter
 @NoArgsConstructor
 @Table(name = "p_user")
 public class User {
@@ -32,6 +31,7 @@ public class User {
 
   @Column(nullable = false)
   @Enumerated(value = EnumType.STRING)
+  @Setter
   private UserRoleEnum role;
 
   public User(String username, String password, UserRoleEnum role) {
