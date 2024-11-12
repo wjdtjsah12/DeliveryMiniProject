@@ -45,14 +45,14 @@ public class ShopService {
   }
 
 
-  public Page<ShopResponseDto> getShopList(int size, Pageable pageable) {
+  public Page<ShopResponseDto> getShopList(int size, String keyword, Pageable pageable) {
 
     // size를 10, 30, 50로 제한
     size = (size == 30 || size == 50) ? size : 10;  // size가 30이나 50이 아니면 10으로 고정
 
     pageable = PageRequest.of(pageable.getPageNumber(), size, pageable.getSort());
 
-    return shopRepository.findAll(pageable).map(ShopResponseDto::new);
+    return shopRepository.findByShopNameContainingIgnoreCase(keyword, pageable).map(ShopResponseDto::new);
   }
 
   @Transactional

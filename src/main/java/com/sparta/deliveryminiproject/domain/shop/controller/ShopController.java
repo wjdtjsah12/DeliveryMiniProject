@@ -53,10 +53,11 @@ public class ShopController {
   @GetMapping
   public ResponseEntity<ApiResponse<Page<ShopResponseDto>>> getShopList(
       @RequestParam(defaultValue = "10") int size,
+      @RequestParam String keyword,
       @PageableDefault(sort = "createdAt", direction = Direction.DESC)
       Pageable pageable) {
 
-    Page<ShopResponseDto> page = shopService.getShopList(size, pageable);
+    Page<ShopResponseDto> page = shopService.getShopList(size, keyword, pageable);
 
     return ResponseEntity.ok()
         .body(new ApiResponse<>("가게 목록 조회 성공", HttpStatus.OK.value(), page));
@@ -73,6 +74,8 @@ public class ShopController {
     return ResponseEntity.status(HttpStatus.OK)
         .body(new ApiResponse("가게 수정 성공", HttpStatus.OK.value(), shopResponseDto));
   }
+
+
 
 
 }
