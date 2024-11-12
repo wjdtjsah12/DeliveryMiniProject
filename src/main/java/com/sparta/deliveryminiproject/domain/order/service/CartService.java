@@ -1,8 +1,8 @@
 package com.sparta.deliveryminiproject.domain.order.service;
 
-import com.sparta.deliveryminiproject.domain.order.dto.CartMenuResponse;
-import com.sparta.deliveryminiproject.domain.order.dto.CartRequest;
-import com.sparta.deliveryminiproject.domain.order.dto.CartResponse;
+import com.sparta.deliveryminiproject.domain.order.dto.CartMenuResponseDto;
+import com.sparta.deliveryminiproject.domain.order.dto.CartRequestDto;
+import com.sparta.deliveryminiproject.domain.order.dto.CartResponseDto;
 import com.sparta.deliveryminiproject.domain.order.entity.Cart;
 import com.sparta.deliveryminiproject.domain.order.repository.CartRepository;
 import com.sparta.deliveryminiproject.domain.shop.entity.Menu;
@@ -26,9 +26,9 @@ public class CartService {
   private final MenuRepository menuRepository;
 
   @Transactional
-  public Cart addMenu(User user, CartRequest cartRequest) {
+  public Cart addMenu(User user, CartRequestDto cartRequestDto) {
 
-    Menu menu = menuRepository.findById(cartRequest.getMenuId())
+    Menu menu = menuRepository.findById(cartRequestDto.getMenuId())
         .orElseThrow(() -> new NullPointerException("선택하신 메뉴의 정보가 없습니다."));
 
     Shop shop = menu.getShop();
@@ -49,14 +49,14 @@ public class CartService {
         .orElse(null);
 
     if (existingCart != null) {
-      existingCart.updateQuantity(cartRequest.getQuantity());
+      existingCart.updateQuantity(cartRequestDto.getQuantity());
       return existingCart;
     } else {
-      return cartRepository.save(cartRequest.toEntity(user, menu));
+      return cartRepository.save(cartRequestDto.toEntity(user, menu));
     }
   }
 
-  public Optional<CartResponse> getCart(User user) {
+  public Optional<CartResponseDto> getCart(User user) {
 
     List<Cart> cartList = cartRepository.findAllByUserAndIsDeletedFalse(user);
 
@@ -66,15 +66,15 @@ public class CartService {
 
     Shop shop = cartList.get(0).getShop();
 
-    List<CartMenuResponse> menuResponseList = cartList.stream()
-        .map(CartMenuResponse::from)
+    List<CartMenuResponseDto> menuResponseList = cartList.stream()
+        .map(CartMenuResponseDto::from)
         .toList();
 
     int totalMenuPrice = menuResponseList.stream()
-        .mapToInt(CartMenuResponse::getPrice)
+        .mapToInt(CartMenuResponseDto::getPrice)
         .sum();
 
-    CartResponse cartResponse = CartResponse.builder()
+    CartResponseDto cartResponseDto = CartResponseDto.builder()
         .shopName(shop.getShopName())
         .menuList(menuResponseList)
         .availableToOrder(availableToOrder(totalMenuPrice, shop))
@@ -83,7 +83,7 @@ public class CartService {
         .totalPrice(totalMenuPrice + shop.getDeliveryTip())
         .build();
 
-    return Optional.of(cartResponse);
+    return Optional.of(cartResponseDto);
   }
 
   @Transactional

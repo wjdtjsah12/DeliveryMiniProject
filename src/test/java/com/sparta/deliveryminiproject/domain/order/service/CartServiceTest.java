@@ -3,7 +3,7 @@ package com.sparta.deliveryminiproject.domain.order.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import com.sparta.deliveryminiproject.domain.order.dto.CartRequest;
+import com.sparta.deliveryminiproject.domain.order.dto.CartRequestDto;
 import com.sparta.deliveryminiproject.domain.order.entity.Cart;
 import com.sparta.deliveryminiproject.domain.order.repository.CartRepository;
 import com.sparta.deliveryminiproject.domain.shop.entity.Menu;
@@ -132,12 +132,12 @@ class CartServiceTest {
     menuRepository.saveAll(List.of(menu1, menu2));
 
     // when
-    CartRequest cartRequest = CartRequest.builder()
+    CartRequestDto cartRequestDto = CartRequestDto.builder()
         .menuId(menu1.getId())
         .quantity(2)
         .build();
 
-    Cart cart = cartService.addMenu(user, cartRequest);
+    Cart cart = cartService.addMenu(user, cartRequestDto);
 
     // then
 
@@ -195,13 +195,13 @@ class CartServiceTest {
     cartRepository.saveAll(List.of(cart1, cart2));
 
     // when
-    CartRequest cartRequest = CartRequest.builder()
+    CartRequestDto cartRequestDto = CartRequestDto.builder()
         .menuId(menu3.getId())
         .quantity(1)
         .build();
 
     // then
-    Cart cart = cartService.addMenu(user, cartRequest);
+    Cart cart = cartService.addMenu(user, cartRequestDto);
     List<UUID> uuidList = cartRepository.findAllByUserAndIsDeletedFalse(user).stream()
         .map(c -> c.getId())
         .toList();
@@ -259,13 +259,13 @@ class CartServiceTest {
     cartRepository.saveAll(List.of(cart1, cart2));
 
     // when
-    CartRequest cartRequest = CartRequest.builder()
+    CartRequestDto cartRequestDto = CartRequestDto.builder()
         .menuId(menu3.getId())
         .quantity(1)
         .build();
 
     // then
-    assertThatThrownBy(() -> cartService.addMenu(user, cartRequest))
+    assertThatThrownBy(() -> cartService.addMenu(user, cartRequestDto))
         .isInstanceOf(IllegalArgumentException.class);
   }
 
@@ -313,13 +313,13 @@ class CartServiceTest {
     cartRepository.saveAll(List.of(cart1, cart2));
 
     // when
-    CartRequest cartRequest = CartRequest.builder()
+    CartRequestDto cartRequestDto = CartRequestDto.builder()
         .menuId(menu1.getId())
         .quantity(2)
         .build();
 
     // then
-    Cart cart = cartService.addMenu(user, cartRequest);
+    Cart cart = cartService.addMenu(user, cartRequestDto);
     assertThat(cart.getQuantity()).isEqualTo(3);
   }
 }

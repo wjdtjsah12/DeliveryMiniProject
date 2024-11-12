@@ -5,10 +5,10 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class CartResponse {
+public class CartResponseDto {
 
   private String shopName;
-  private List<CartMenuResponse> menuList;
+  private List<CartMenuResponseDto> menuList;
   private boolean availableToOrder;
   private int totalMenuPrice;
   private int deliveryTip;
@@ -16,7 +16,8 @@ public class CartResponse {
 
 
   @Builder
-  public CartResponse(String shopName, List<CartMenuResponse> menuList, boolean availableToOrder,
+  public CartResponseDto(String shopName, List<CartMenuResponseDto> menuList,
+      boolean availableToOrder,
       int totalMenuPrice, int deliveryTip, int totalPrice) {
     this.shopName = shopName;
     this.menuList = menuList;

@@ -8,13 +8,13 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class CartRequest {
+public class CartRequestDto {
 
   private UUID menuId;
   private int quantity;
 
   @Builder
-  private CartRequest(UUID menuId, int quantity) {
+  private CartRequestDto(UUID menuId, int quantity) {
     this.menuId = menuId;
     this.quantity = quantity;
   }

@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class CartMenuResponse {
+public class CartMenuResponseDto {
 
   private UUID id;
   private String menuName;
@@ -14,15 +14,15 @@ public class CartMenuResponse {
   private int price;
 
   @Builder
-  public CartMenuResponse(UUID id, String menuName, int quantity, int price) {
+  public CartMenuResponseDto(UUID id, String menuName, int quantity, int price) {
     this.id = id;
     this.menuName = menuName;
     this.quantity = quantity;
     this.price = price;
   }
 
-  public static CartMenuResponse from(Cart cart) {
-    return CartMenuResponse.builder()
+  public static CartMenuResponseDto from(Cart cart) {
+    return CartMenuResponseDto.builder()
         .id(cart.getId())
         .menuName(cart.getMenu().getMenuName())
         .quantity(cart.getQuantity())
