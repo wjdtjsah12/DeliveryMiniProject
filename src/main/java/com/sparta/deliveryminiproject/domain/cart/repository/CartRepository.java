@@ -1,6 +1,8 @@
 package com.sparta.deliveryminiproject.domain.cart.repository;
 
 import com.sparta.deliveryminiproject.domain.cart.entity.Cart;
+import com.sparta.deliveryminiproject.domain.shop.entity.Menu;
+import com.sparta.deliveryminiproject.domain.shop.entity.Shop;
 import com.sparta.deliveryminiproject.domain.user.entity.User;
 import java.util.List;
 import java.util.Optional;
@@ -15,4 +17,8 @@ public interface CartRepository extends JpaRepository<Cart, UUID> {
   List<Cart> findAllByUserAndIsDeletedFalse(@Param("user") User user);
 
   Optional<Cart> findByIdAndUserAndIsDeletedFalse(UUID id, User user);
+
+  Optional<Cart> findByUserAndMenuAndIsDeletedFalse(User user, Menu menu);
+
+  boolean existsByUserAndShopNotAndIsDeletedFalse(User user, Shop shop);
 }

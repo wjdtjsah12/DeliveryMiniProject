@@ -47,7 +47,7 @@ public class CartController {
 
   @GetMapping
   public ApiResponse getCart(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-    return ApiResponse.success(cartService.findMenuListInCart(userDetails.getUser()).orElse(null));
+    return ApiResponse.success(cartService.findMenuListInCart(userDetails.getUser()));
   }
 
   @PutMapping("/{cartId}")
