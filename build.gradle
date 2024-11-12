@@ -24,11 +24,12 @@ repositories {
 }
 
 dependencies {
+    // Validation
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
     // JWT
     compileOnly group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.5'
     runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.5'
     runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.5'
-
     // QueryDSL 적용을 위한 의존성 (SpringBoot3.0 부터는 jakarta 사용)
     implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
     // QueryDSL APT 의존성 (annotation processing을 위한 의존성)
