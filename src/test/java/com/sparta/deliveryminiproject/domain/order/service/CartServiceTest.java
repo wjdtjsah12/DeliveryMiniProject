@@ -11,16 +11,19 @@ import com.sparta.deliveryminiproject.domain.shop.entity.Shop;
 import com.sparta.deliveryminiproject.domain.shop.repository.MenuRepository;
 import com.sparta.deliveryminiproject.domain.shop.repository.ShopRepository;
 import com.sparta.deliveryminiproject.domain.user.entity.User;
+import com.sparta.deliveryminiproject.domain.user.entity.UserRoleEnum;
 import com.sparta.deliveryminiproject.domain.user.repository.UserRepository;
+import com.sparta.deliveryminiproject.global.exception.ApiException;
 import java.util.List;
 import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
-//@Transactional
+@Transactional
 class CartServiceTest {
 
   @Autowired
@@ -40,7 +43,7 @@ class CartServiceTest {
 
   @DisplayName("유저 정보를 받아 카트를 조회한다.")
   @Test
-  void getCartWithUser() {
+  void findMenuListInCartWithUser() {
 //    // given
 //    User user = new User("aaaa", "aaaa", "User");
 //    userRepository.save(user);
@@ -109,7 +112,7 @@ class CartServiceTest {
   @Test
   void addCartWithEmptyCart() {
     // given
-    User user = new User("aaaa", "aaaa", "User");
+    User user = new User("aaaa", "aaaa", UserRoleEnum.CUSTOMER);
     userRepository.save(user);
 
     Shop shop = new Shop("맥도날드", "햄버거가게", 10000, 1000);
@@ -137,7 +140,7 @@ class CartServiceTest {
         .quantity(2)
         .build();
 
-    Cart cart = cartService.addMenu(user, cartRequestDto);
+    Cart cart = cartService.addMenuToCart(user, cartRequestDto);
 
     // then
 
@@ -147,9 +150,9 @@ class CartServiceTest {
 
   @DisplayName("유저의 장바구니가 비어있지 않을 떄 이미 포함된 가게의 메뉴를 추가하면 장바구니에 저장된다")
   @Test
-  void addMenuWithAlreadyInCart() {
+  void addMenuInCartWithAlreadyToCart() {
     // given
-    User user = new User("aaaa", "aaaa", "User");
+    User user = new User("aaaa", "aaaa", UserRoleEnum.CUSTOMER);
     userRepository.save(user);
 
     Shop shop = new Shop("맥도날드", "햄버거가게", 10000, 1000);
@@ -201,7 +204,7 @@ class CartServiceTest {
         .build();
 
     // then
-    Cart cart = cartService.addMenu(user, cartRequestDto);
+    Cart cart = cartService.addMenuToCart(user, cartRequestDto);
     List<UUID> uuidList = cartRepository.findAllByUserAndIsDeletedFalse(user).stream()
         .map(c -> c.getId())
         .toList();
@@ -210,9 +213,9 @@ class CartServiceTest {
 
   @DisplayName("유저의 장바구니가 비어있지 않을 때 다른 가게의 메뉴를 장바구니에 추가하면 예외가 발생한다")
   @Test
-  void addMenuWithAnotherShop() {
+  void addMenuToCartWithAnotherShop() {
     // given
-    User user = new User("aaaa", "aaaa", "User");
+    User user = new User("aaaa", "aaaa", UserRoleEnum.CUSTOMER);
     userRepository.save(user);
 
     Shop shop1 = new Shop("맥도날드", "햄버거가게", 10000, 1000);
@@ -265,15 +268,15 @@ class CartServiceTest {
         .build();
 
     // then
-    assertThatThrownBy(() -> cartService.addMenu(user, cartRequestDto))
-        .isInstanceOf(IllegalArgumentException.class);
+    assertThatThrownBy(() -> cartService.addMenuToCart(user, cartRequestDto))
+        .isInstanceOf(ApiException.class);
   }
 
   @DisplayName("이미 장바구니에 담겨있는 똑같은 메뉴를 한번 더 추가하면 수량이 늘어난다")
   @Test
   void addExistMenu() {
     // given
-    User user = new User("aaaa", "aaaa", "User");
+    User user = new User("aaaa", "aaaa", UserRoleEnum.CUSTOMER);
     userRepository.save(user);
 
     Shop shop1 = new Shop("맥도날드", "햄버거가게", 10000, 1000);
@@ -319,7 +322,7 @@ class CartServiceTest {
         .build();
 
     // then
-    Cart cart = cartService.addMenu(user, cartRequestDto);
+    Cart cart = cartService.addMenuToCart(user, cartRequestDto);
     assertThat(cart.getQuantity()).isEqualTo(3);
   }
 }

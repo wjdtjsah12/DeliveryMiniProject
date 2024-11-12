@@ -8,15 +8,16 @@ import com.sparta.deliveryminiproject.domain.shop.entity.Shop;
 import com.sparta.deliveryminiproject.domain.shop.repository.MenuRepository;
 import com.sparta.deliveryminiproject.domain.shop.repository.ShopRepository;
 import com.sparta.deliveryminiproject.domain.user.entity.User;
+import com.sparta.deliveryminiproject.domain.user.entity.UserRoleEnum;
 import com.sparta.deliveryminiproject.domain.user.repository.UserRepository;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-@DataJpaTest
+@SpringBootTest
 @Transactional
 class CartRepositoryTest {
 
@@ -36,7 +37,7 @@ class CartRepositoryTest {
   @Test
   void findCart() {
     // given
-    User user = new User("aaaa", "aaaa", "User");
+    User user = new User("aaaa", "aaaa", UserRoleEnum.CUSTOMER);
     userRepository.save(user);
 
     Shop shop = new Shop("맥도날드", "햄버거가게", 10000, 1000);
