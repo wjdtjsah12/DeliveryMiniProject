@@ -33,4 +33,12 @@ public class ShopService {
 
     return new ShopResponseDto(shop);
   }
+
+  public ShopResponseDto getShop(Long shopId) {
+
+    return new ShopResponseDto(shopRepository.findById(shopId)
+        .orElseThrow(() -> new ApiException("존재하지 않는 가게입니다.", HttpStatus.NOT_FOUND)));
+  }
+
+
 }
