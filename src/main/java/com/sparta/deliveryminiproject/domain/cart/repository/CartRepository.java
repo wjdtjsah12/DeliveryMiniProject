@@ -1,6 +1,6 @@
-package com.sparta.deliveryminiproject.domain.order.repository;
+package com.sparta.deliveryminiproject.domain.cart.repository;
 
-import com.sparta.deliveryminiproject.domain.order.entity.Cart;
+import com.sparta.deliveryminiproject.domain.cart.entity.Cart;
 import com.sparta.deliveryminiproject.domain.user.entity.User;
 import java.util.List;
 import java.util.Optional;

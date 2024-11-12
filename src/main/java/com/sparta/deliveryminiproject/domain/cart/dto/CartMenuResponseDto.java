@@ -1,6 +1,6 @@
-package com.sparta.deliveryminiproject.domain.order.dto;
+package com.sparta.deliveryminiproject.domain.cart.dto;
 
-import com.sparta.deliveryminiproject.domain.order.entity.Cart;
+import com.sparta.deliveryminiproject.domain.cart.entity.Cart;
 import java.util.UUID;
 import lombok.Builder;
 import lombok.Getter;

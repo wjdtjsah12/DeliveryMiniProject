@@ -1,10 +1,10 @@
-package com.sparta.deliveryminiproject.domain.order.service;
+package com.sparta.deliveryminiproject.domain.cart.service;
 
-import com.sparta.deliveryminiproject.domain.order.dto.CartMenuResponseDto;
-import com.sparta.deliveryminiproject.domain.order.dto.CartRequestDto;
-import com.sparta.deliveryminiproject.domain.order.dto.CartResponseDto;
-import com.sparta.deliveryminiproject.domain.order.entity.Cart;
-import com.sparta.deliveryminiproject.domain.order.repository.CartRepository;
+import com.sparta.deliveryminiproject.domain.cart.dto.CartMenuResponseDto;
+import com.sparta.deliveryminiproject.domain.cart.dto.CartRequestDto;
+import com.sparta.deliveryminiproject.domain.cart.dto.CartResponseDto;
+import com.sparta.deliveryminiproject.domain.cart.entity.Cart;
+import com.sparta.deliveryminiproject.domain.cart.repository.CartRepository;
 import com.sparta.deliveryminiproject.domain.shop.entity.Menu;
 import com.sparta.deliveryminiproject.domain.shop.entity.Shop;
 import com.sparta.deliveryminiproject.domain.shop.repository.MenuRepository;

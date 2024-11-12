@@ -1,4 +1,4 @@
-package com.sparta.deliveryminiproject.domain.order.dto;
+package com.sparta.deliveryminiproject.domain.cart.dto;
 
 import java.util.List;
 import lombok.Builder;

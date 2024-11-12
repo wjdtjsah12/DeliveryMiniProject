@@ -2,7 +2,8 @@ package com.sparta.deliveryminiproject.domain.order.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.sparta.deliveryminiproject.domain.order.entity.Cart;
+import com.sparta.deliveryminiproject.domain.cart.entity.Cart;
+import com.sparta.deliveryminiproject.domain.cart.repository.CartRepository;
 import com.sparta.deliveryminiproject.domain.shop.entity.Menu;
 import com.sparta.deliveryminiproject.domain.shop.entity.Shop;
 import com.sparta.deliveryminiproject.domain.shop.repository.MenuRepository;

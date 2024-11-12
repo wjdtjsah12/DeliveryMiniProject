@@ -1,8 +1,8 @@
-package com.sparta.deliveryminiproject.domain.order.controller;
+package com.sparta.deliveryminiproject.domain.cart.controller;
 
-import com.sparta.deliveryminiproject.domain.order.dto.CartRequestDto;
-import com.sparta.deliveryminiproject.domain.order.entity.Cart;
-import com.sparta.deliveryminiproject.domain.order.service.CartService;
+import com.sparta.deliveryminiproject.domain.cart.dto.CartRequestDto;
+import com.sparta.deliveryminiproject.domain.cart.entity.Cart;
+import com.sparta.deliveryminiproject.domain.cart.service.CartService;
 import com.sparta.deliveryminiproject.global.response.ApiResponse;
 import com.sparta.deliveryminiproject.global.security.UserDetailsImpl;
 import jakarta.validation.Valid;
