@@ -65,4 +65,15 @@ public class ShopService {
 
     return new ShopResponseDto(shop);
   }
+
+  @Transactional
+  public ShopResponseDto deleteShop(Long shopId) {
+
+    Shop shop = shopRepository.findById(shopId)
+        .orElseThrow(() -> new ApiException("존재하지 않는 가게입니다.", HttpStatus.NOT_FOUND));
+
+    shop.setIsDeleted(true);
+
+    return new ShopResponseDto(shop);
+  }
 }

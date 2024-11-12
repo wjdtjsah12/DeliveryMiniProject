@@ -13,6 +13,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -75,7 +76,16 @@ public class ShopController {
         .body(new ApiResponse("가게 수정 성공", HttpStatus.OK.value(), shopResponseDto));
   }
 
+  @Secured({Authority.MASTER, Authority.MANAGER})
+  @DeleteMapping("/{shopId}")
+  public ResponseEntity<ApiResponse> deleteShop(
+      @PathVariable Long shopId) {
 
+    ShopResponseDto shopResponseDto = shopService.deleteShop(shopId);
+
+    return ResponseEntity.status(HttpStatus.OK)
+        .body(new ApiResponse("가게 삭제 성공", HttpStatus.OK.value(), shopResponseDto));
+  }
 
 
 }
