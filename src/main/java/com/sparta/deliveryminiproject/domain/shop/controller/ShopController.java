@@ -6,11 +6,11 @@ import com.sparta.deliveryminiproject.domain.shop.service.ShopService;
 import com.sparta.deliveryminiproject.domain.user.entity.UserRoleEnum.Authority;
 import com.sparta.deliveryminiproject.global.response.ApiResponse;
 import jakarta.validation.Valid;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,7 +41,7 @@ public class ShopController {
 
   @GetMapping("/{shopId}")
   public ApiResponse getShop(
-      @PathVariable Long shopId) {
+      @PathVariable UUID shopId) {
 
     ShopResponseDto shopResponseDto = shopService.getShop(shopId);
 
@@ -52,10 +52,12 @@ public class ShopController {
   public ApiResponse<Page<ShopResponseDto>> getShopList(
       @RequestParam(defaultValue = "10") int size,
       @RequestParam String keyword,
-      @PageableDefault(sort = "createdAt", direction = Direction.DESC)
+      @RequestParam(defaultValue = "createdAt") String sortBy,
+      @RequestParam(defaultValue = "DESC") Direction direction,
       Pageable pageable) {
 
-    Page<ShopResponseDto> page = shopService.getShopList(size, keyword, pageable);
+    Page<ShopResponseDto> page = shopService.getShopList(size, keyword, sortBy, direction,
+        pageable);
 
     return ApiResponse.success(page);
   }
@@ -63,7 +65,7 @@ public class ShopController {
   @Secured({Authority.OWNER, Authority.MASTER, Authority.MANAGER})
   @PutMapping("/{shopId}")
   public ApiResponse updateShop(
-      @PathVariable Long shopId,
+      @PathVariable UUID shopId,
       @Valid @RequestBody ShopRequestDto shopRequestDto) {
 
     ShopResponseDto shopResponseDto = shopService.updateShop(shopId, shopRequestDto);
@@ -74,7 +76,7 @@ public class ShopController {
   @Secured({Authority.MASTER, Authority.MANAGER})
   @DeleteMapping("/{shopId}")
   public ApiResponse deleteShop(
-      @PathVariable Long shopId) {
+      @PathVariable UUID shopId) {
 
     ShopResponseDto shopResponseDto = shopService.deleteShop(shopId);
 
