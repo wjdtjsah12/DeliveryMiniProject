@@ -1,6 +1,7 @@
 package com.sparta.deliveryminiproject.domain.shop.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,6 +20,7 @@ public class ShopRequestDto {
 
   private String address;
 
+  @Size(max = 50, message = "가게 설명은 50자 이하로 작성해주세요.")
   private String description;
 
   private Integer minDeliveryPrice;

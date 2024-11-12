@@ -5,6 +5,7 @@ import com.sparta.deliveryminiproject.domain.shop.dto.ShopResponseDto;
 import com.sparta.deliveryminiproject.domain.shop.service.ShopService;
 import com.sparta.deliveryminiproject.domain.user.entity.UserRoleEnum.Authority;
 import com.sparta.deliveryminiproject.global.response.ApiResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -68,7 +69,7 @@ public class ShopController {
   @PutMapping("/{shopId}")
   public ResponseEntity<ApiResponse> updateShop(
       @PathVariable Long shopId,
-      @RequestBody ShopRequestDto shopRequestDto) {
+      @Valid @RequestBody ShopRequestDto shopRequestDto) {
 
     ShopResponseDto shopResponseDto = shopService.updateShop(shopId, shopRequestDto);
 

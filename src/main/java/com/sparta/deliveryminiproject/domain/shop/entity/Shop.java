@@ -33,7 +33,7 @@ public class Shop extends BaseEntity {
   @Column(nullable = false)
   private String address;
 
-  @Column
+  @Column(length = 50)
   private String description;
 
   @Column
