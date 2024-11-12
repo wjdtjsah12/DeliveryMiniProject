@@ -62,4 +62,21 @@ public class Shop extends BaseEntity {
     this.user = owner;
   }
 
+  public void update(ShopRequestDto shopRequestDto) {
+    if (shopRequestDto.getShopName() != null) {
+      this.shopName = shopRequestDto.getShopName();
+    }
+    if (shopRequestDto.getDescription() != null) {
+      this.address = shopRequestDto.getAddress();
+    }
+    if (shopRequestDto.getMinDeliveryPrice() != null) {
+      this.minDeliveryPrice = shopRequestDto.getMinDeliveryPrice();
+    }
+    if (shopRequestDto.getDeliveryTip() != null) {
+      this.deliveryTip = shopRequestDto.getDeliveryTip();
+    }
+    if (shopRequestDto.getIsHidden() != null) {
+      this.isHidden = shopRequestDto.getIsHidden();
+    }
+  }
 }

@@ -13,6 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -52,5 +53,16 @@ public class ShopService {
     pageable = PageRequest.of(pageable.getPageNumber(), size, pageable.getSort());
 
     return shopRepository.findAll(pageable).map(ShopResponseDto::new);
+  }
+
+  @Transactional
+  public ShopResponseDto updateShop(Long shopId, ShopRequestDto shopRequestDto) {
+
+    Shop shop = shopRepository.findById(shopId)
+        .orElseThrow(() -> new ApiException("존재하지 않는 가게입니다.", HttpStatus.NOT_FOUND));
+
+    shop.update(shopRequestDto);
+
+    return new ShopResponseDto(shop);
   }
 }
