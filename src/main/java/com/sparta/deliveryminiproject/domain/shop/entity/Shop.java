@@ -65,8 +65,11 @@ public class Shop extends BaseEntity {
     if (shopRequestDto.getShopName() != null) {
       this.shopName = shopRequestDto.getShopName();
     }
-    if (shopRequestDto.getDescription() != null) {
+    if (shopRequestDto.getAddress() != null) {
       this.address = shopRequestDto.getAddress();
+    }
+    if (shopRequestDto.getDescription() != null) {
+      this.description = shopRequestDto.getDescription();
     }
     if (shopRequestDto.getMinDeliveryPrice() != null) {
       this.minDeliveryPrice = shopRequestDto.getMinDeliveryPrice();
