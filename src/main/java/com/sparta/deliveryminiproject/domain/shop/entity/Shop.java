@@ -25,7 +25,6 @@ public class Shop extends BaseEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
-  @Column(name = "shop_id", unique = true, nullable = false)
   private UUID id;
 
   @Column(nullable = false)
