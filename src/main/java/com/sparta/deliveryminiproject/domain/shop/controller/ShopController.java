@@ -5,6 +5,7 @@ import com.sparta.deliveryminiproject.domain.shop.dto.ShopResponseDto;
 import com.sparta.deliveryminiproject.domain.shop.service.ShopService;
 import com.sparta.deliveryminiproject.domain.user.entity.UserRoleEnum.Authority;
 import com.sparta.deliveryminiproject.global.response.ApiResponse;
+import com.sparta.deliveryminiproject.global.security.UserDetailsImpl;
 import jakarta.validation.Valid;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -66,9 +68,11 @@ public class ShopController {
   @PutMapping("/{shopId}")
   public ApiResponse updateShop(
       @PathVariable UUID shopId,
-      @Valid @ModelAttribute ShopRequestDto shopRequestDto) {
+      @Valid @ModelAttribute ShopRequestDto shopRequestDto,
+      @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-    ShopResponseDto shopResponseDto = shopService.updateShop(shopId, shopRequestDto);
+    ShopResponseDto shopResponseDto = shopService.updateShop(shopId, shopRequestDto,
+        userDetails.getUser());
 
     return ApiResponse.success(shopResponseDto);
   }

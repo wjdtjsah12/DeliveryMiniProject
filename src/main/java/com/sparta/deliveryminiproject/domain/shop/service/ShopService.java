@@ -5,6 +5,7 @@ import com.sparta.deliveryminiproject.domain.shop.dto.ShopResponseDto;
 import com.sparta.deliveryminiproject.domain.shop.entity.Shop;
 import com.sparta.deliveryminiproject.domain.shop.repository.ShopRepository;
 import com.sparta.deliveryminiproject.domain.user.entity.User;
+import com.sparta.deliveryminiproject.domain.user.entity.UserRoleEnum;
 import com.sparta.deliveryminiproject.domain.user.repository.UserRepository;
 import com.sparta.deliveryminiproject.global.exception.ApiException;
 import java.util.UUID;
@@ -64,10 +65,20 @@ public class ShopService {
   }
 
   @Transactional
-  public ShopResponseDto updateShop(UUID shopId, ShopRequestDto shopRequestDto) {
+  public ShopResponseDto updateShop(UUID shopId, ShopRequestDto shopRequestDto, User user) {
 
     Shop shop = shopRepository.findById(shopId)
         .orElseThrow(() -> new ApiException("존재하지 않는 가게입니다.", HttpStatus.NOT_FOUND));
+
+    if (!(user.getRole().equals(UserRoleEnum.MANAGER) ||
+        user.getRole().equals(UserRoleEnum.MASTER))) {
+      if (user.getRole().equals(UserRoleEnum.CUSTOMER)) {
+        throw new ApiException("사용자는 가게를 수정 할 수 없습니다.", HttpStatus.BAD_REQUEST);
+      }
+      if (!shop.getUser().getId().equals(user.getId())) {
+        throw new ApiException("가게 주인이 아닙니다.", HttpStatus.BAD_REQUEST);
+      }
+    }
 
     shop.update(shopRequestDto);
 
