@@ -9,10 +9,12 @@ import com.sparta.deliveryminiproject.domain.shop.entity.Menu;
 import com.sparta.deliveryminiproject.domain.shop.entity.Shop;
 import com.sparta.deliveryminiproject.domain.shop.repository.MenuRepository;
 import com.sparta.deliveryminiproject.domain.user.entity.User;
+import com.sparta.deliveryminiproject.global.exception.ApiException;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,10 +28,10 @@ public class CartService {
   private final MenuRepository menuRepository;
 
   @Transactional
-  public Cart addMenu(User user, CartRequestDto cartRequestDto) {
+  public Cart addMenuToCart(User user, CartRequestDto cartRequestDto) {
 
     Menu menu = menuRepository.findById(cartRequestDto.getMenuId())
-        .orElseThrow(() -> new NullPointerException("선택하신 메뉴의 정보가 없습니다."));
+        .orElseThrow(() -> new ApiException("선택하신 메뉴의 정보가 없습니다.", HttpStatus.BAD_REQUEST));
 
     Shop shop = menu.getShop();
 
@@ -39,7 +41,7 @@ public class CartService {
       Shop existingShop = cartList.get(0).getShop();
 
       if (!existingShop.getId().equals(shop.getId())) {
-        throw new IllegalArgumentException("한 번에 하나의 가게에서만 주문할 수 있습니다.");
+        throw new ApiException("한 번에 하나의 가게에서만 주문할 수 있습니다.", HttpStatus.BAD_REQUEST);
       }
     }
 
@@ -56,7 +58,7 @@ public class CartService {
     }
   }
 
-  public Optional<CartResponseDto> getCart(User user) {
+  public Optional<CartResponseDto> findMenuListInCart(User user) {
 
     List<Cart> cartList = cartRepository.findAllByUserAndIsDeletedFalse(user);
 
@@ -87,14 +89,14 @@ public class CartService {
   }
 
   @Transactional
-  public void updateQuantity(User user, UUID cartId, String sign) {
+  public void updateQuantity(User user, UUID cartId, String operator) {
 
     Cart cart = cartRepository.findByIdAndUserAndIsDeletedFalse(cartId, user)
-        .orElseThrow(() -> new NullPointerException("장바구니에 담긴 메뉴의 정보를 찾을 수 없습니다."));
+        .orElseThrow(() -> new ApiException("장바구니에 담긴 메뉴의 정보를 찾을 수 없습니다.", HttpStatus.NOT_FOUND));
 
-    if (sign.equals("plus")) {
+    if (operator.equals("plus")) {
       cart.updateQuantity(1);
-    } else if (sign.equals("minus")) {
+    } else if (operator.equals("minus")) {
       if (cart.getQuantity() == 0) {
         cart.setIsDeleted(true);
         return;
@@ -104,10 +106,10 @@ public class CartService {
   }
 
   @Transactional
-  public void deleteCart(User user, UUID cartId) {
+  public void deleteMenuAtCart(User user, UUID cartId) {
 
     Cart cart = cartRepository.findByIdAndUserAndIsDeletedFalse(cartId, user)
-        .orElseThrow(() -> new NullPointerException("장바구니에 담긴 메뉴의 정보를 찾을 수 없습니다."));
+        .orElseThrow(() -> new ApiException("장바구니에 담긴 메뉴의 정보를 찾을 수 없습니다.", HttpStatus.NOT_FOUND));
 
     cart.setIsDeleted(true);
   }
