@@ -8,6 +8,9 @@ import com.sparta.deliveryminiproject.domain.user.entity.User;
 import com.sparta.deliveryminiproject.domain.user.repository.UserRepository;
 import com.sparta.deliveryminiproject.global.exception.ApiException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -41,4 +44,13 @@ public class ShopService {
   }
 
 
+  public Page<ShopResponseDto> getShopList(int size, Pageable pageable) {
+
+    // size를 10, 30, 50로 제한
+    size = (size == 30 || size == 50) ? size : 10;  // size가 30이나 50이 아니면 10으로 고정
+
+    pageable = PageRequest.of(pageable.getPageNumber(), size, pageable.getSort());
+
+    return shopRepository.findAll(pageable).map(ShopResponseDto::new);
+  }
 }
