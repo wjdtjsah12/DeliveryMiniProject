@@ -1,7 +1,6 @@
 package com.sparta.deliveryminiproject.domain.user.entity;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 @Getter
 public enum UserRoleEnum {
@@ -14,6 +13,15 @@ public enum UserRoleEnum {
 
   UserRoleEnum(String authority) {
     this.authority = authority;
+  }
+
+  public static UserRoleEnum contains(String role) {
+    for (UserRoleEnum userRole : UserRoleEnum.values()) {
+      if (userRole.getAuthority().equals(role)) {
+        return userRole;
+      }
+    }
+    return null;
   }
 
   public static class Authority {
