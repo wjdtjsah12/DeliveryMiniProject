@@ -35,6 +35,7 @@ public class UserController {
     userService.signin(requestDto, response);
   }
 
+
   @PostMapping("/role/{role}")
   public void updateRole(@PathVariable String role,
       @AuthenticationPrincipal UserDetailsImpl userDetails) {
