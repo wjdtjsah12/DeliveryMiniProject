@@ -70,11 +70,9 @@ public class ShopService {
     Shop shop = shopRepository.findById(shopId)
         .orElseThrow(() -> new ApiException("존재하지 않는 가게입니다.", HttpStatus.NOT_FOUND));
 
+    // 가게 소유자만 가게 정보를 수정 할 수 있도록 검증
     if (!(user.getRole().equals(UserRoleEnum.MANAGER) ||
         user.getRole().equals(UserRoleEnum.MASTER))) {
-      if (user.getRole().equals(UserRoleEnum.CUSTOMER)) {
-        throw new ApiException("사용자는 가게를 수정 할 수 없습니다.", HttpStatus.BAD_REQUEST);
-      }
       if (!shop.getUser().getId().equals(user.getId())) {
         throw new ApiException("가게 주인이 아닙니다.", HttpStatus.BAD_REQUEST);
       }
