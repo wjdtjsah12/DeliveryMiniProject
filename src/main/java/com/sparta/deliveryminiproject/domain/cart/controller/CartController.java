@@ -1,12 +1,13 @@
 package com.sparta.deliveryminiproject.domain.cart.controller;
 
 import com.sparta.deliveryminiproject.domain.cart.dto.CartRequestDto;
+import com.sparta.deliveryminiproject.domain.cart.dto.CartResponseDto;
 import com.sparta.deliveryminiproject.domain.cart.entity.Cart;
 import com.sparta.deliveryminiproject.domain.cart.service.CartService;
-import com.sparta.deliveryminiproject.global.response.ApiResponse;
 import com.sparta.deliveryminiproject.global.security.UserDetailsImpl;
 import jakarta.validation.Valid;
 import java.net.URI;
+import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +31,7 @@ public class CartController {
   private final CartService cartService;
 
   @PostMapping
-  public ResponseEntity<ApiResponse> addMenu(
+  public ResponseEntity addMenu(
       @AuthenticationPrincipal UserDetailsImpl userDetails,
       @RequestBody @Valid CartRequestDto cartRequestDto
   ) {
@@ -42,30 +43,37 @@ public class CartController {
         .buildAndExpand(cart.getId())
         .toUri();
 
-    return ResponseEntity.created(location).body(ApiResponse.success());
+    return ResponseEntity.created(location).build();
   }
 
   @GetMapping
-  public ApiResponse getCart(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-    return ApiResponse.success(cartService.findMenuListInCart(userDetails.getUser()));
+  public ResponseEntity getCart(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+    Optional<CartResponseDto> cartResponseDto = cartService.findMenuListInCart(
+        userDetails.getUser());
+
+    if (cartResponseDto.isEmpty()) {
+      return ResponseEntity.noContent().build();
+    }
+
+    return ResponseEntity.ok(cartResponseDto.get());
   }
 
   @PutMapping("/{cartId}")
-  public ApiResponse updateQuantity(
+  public ResponseEntity updateQuantity(
       @AuthenticationPrincipal UserDetailsImpl userDetails,
       @PathVariable UUID cartId,
       @RequestParam String operator
   ) {
     cartService.updateQuantity(userDetails.getUser(), cartId, operator);
-    return ApiResponse.success();
+    return ResponseEntity.ok().build();
   }
 
   @DeleteMapping("/{cartId}")
-  public ApiResponse deleteCart(
+  public ResponseEntity deleteCart(
       @AuthenticationPrincipal UserDetailsImpl userDetails,
       @PathVariable UUID cartId
   ) {
     cartService.deleteMenuAtCart(userDetails.getUser(), cartId);
-    return ApiResponse.success();
+    return ResponseEntity.ok().build();
   }
 }

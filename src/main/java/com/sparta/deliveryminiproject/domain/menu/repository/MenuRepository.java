@@ -1,6 +1,6 @@
-package com.sparta.deliveryminiproject.domain.shop.repository;
+package com.sparta.deliveryminiproject.domain.menu.repository;
 
-import com.sparta.deliveryminiproject.domain.shop.entity.Menu;
+import com.sparta.deliveryminiproject.domain.menu.entity.Menu;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 

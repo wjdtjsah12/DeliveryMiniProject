@@ -5,9 +5,9 @@ import com.sparta.deliveryminiproject.domain.cart.dto.CartRequestDto;
 import com.sparta.deliveryminiproject.domain.cart.dto.CartResponseDto;
 import com.sparta.deliveryminiproject.domain.cart.entity.Cart;
 import com.sparta.deliveryminiproject.domain.cart.repository.CartRepository;
-import com.sparta.deliveryminiproject.domain.shop.entity.Menu;
+import com.sparta.deliveryminiproject.domain.menu.entity.Menu;
+import com.sparta.deliveryminiproject.domain.menu.repository.MenuRepository;
 import com.sparta.deliveryminiproject.domain.shop.entity.Shop;
-import com.sparta.deliveryminiproject.domain.shop.repository.MenuRepository;
 import com.sparta.deliveryminiproject.domain.user.entity.User;
 import com.sparta.deliveryminiproject.global.exception.ApiException;
 import java.util.ArrayList;
@@ -51,11 +51,11 @@ public class CartService {
     return cartRepository.save(cartRequestDto.toEntity(user, menu));
   }
 
-  public CartResponseDto findMenuListInCart(User user) {
+  public Optional<CartResponseDto> findMenuListInCart(User user) {
     List<Cart> cartList = cartRepository.findAllByUserAndIsDeletedFalse(user);
 
     if (cartList.isEmpty()) {
-      return null;
+      return Optional.empty();
     }
 
     Shop shop = cartList.get(0).getShop();
@@ -70,7 +70,7 @@ public class CartService {
         .mapToInt(Integer::intValue)
         .sum();
 
-    return CartResponseDto.builder()
+    CartResponseDto cartResponseDto = CartResponseDto.builder()
         .shopName(shop.getShopName())
         .menuList(menuResponseList)
         .availableToOrder(availableToOrder(totalMenuPrice, shop))
@@ -78,6 +78,8 @@ public class CartService {
         .deliveryTip(shop.getDeliveryTip())
         .totalPrice(totalMenuPrice + shop.getDeliveryTip())
         .build();
+
+    return Optional.of(cartResponseDto);
   }
 
   @Transactional

@@ -4,9 +4,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.sparta.deliveryminiproject.domain.cart.entity.Cart;
 import com.sparta.deliveryminiproject.domain.cart.repository.CartRepository;
-import com.sparta.deliveryminiproject.domain.shop.entity.Menu;
+import com.sparta.deliveryminiproject.domain.menu.entity.Menu;
+import com.sparta.deliveryminiproject.domain.menu.repository.MenuRepository;
 import com.sparta.deliveryminiproject.domain.shop.entity.Shop;
-import com.sparta.deliveryminiproject.domain.shop.repository.MenuRepository;
 import com.sparta.deliveryminiproject.domain.shop.repository.ShopRepository;
 import com.sparta.deliveryminiproject.domain.user.entity.User;
 import com.sparta.deliveryminiproject.domain.user.entity.UserRoleEnum;

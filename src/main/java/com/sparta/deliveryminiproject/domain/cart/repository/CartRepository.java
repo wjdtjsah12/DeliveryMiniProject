@@ -1,7 +1,7 @@
 package com.sparta.deliveryminiproject.domain.cart.repository;
 
 import com.sparta.deliveryminiproject.domain.cart.entity.Cart;
-import com.sparta.deliveryminiproject.domain.shop.entity.Menu;
+import com.sparta.deliveryminiproject.domain.menu.entity.Menu;
 import com.sparta.deliveryminiproject.domain.shop.entity.Shop;
 import com.sparta.deliveryminiproject.domain.user.entity.User;
 import java.util.List;
