@@ -5,10 +5,13 @@ import com.sparta.deliveryminiproject.domain.user.dto.SignupRequestDto;
 import com.sparta.deliveryminiproject.domain.user.entity.User;
 import com.sparta.deliveryminiproject.domain.user.entity.UserRoleEnum;
 import com.sparta.deliveryminiproject.domain.user.repository.UserRepository;
+import com.sparta.deliveryminiproject.global.exception.ApiException;
 import com.sparta.deliveryminiproject.global.jwt.JwtUtil;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,14 +24,14 @@ public class UserService {
   private final PasswordEncoder passwordEncoder;
   private final JwtUtil jwtUtil;
 
-  public void signup(SignupRequestDto requestDto) {
+  public void signup(@Valid SignupRequestDto requestDto) {
 
     String username = requestDto.getUsername();
     String password = passwordEncoder.encode(requestDto.getPassword());
 
     Optional<User> checkUsername = userRepository.findByUsername(username);
     if (checkUsername.isPresent()) {
-      throw new IllegalArgumentException("Duplicate Username Found");
+      throw new ApiException("Duplicate Username Found", HttpStatus.BAD_REQUEST);
     }
 
     User user = new User(username, password, UserRoleEnum.CUSTOMER);
@@ -45,7 +48,7 @@ public class UserService {
     );
 
     if (!passwordEncoder.matches(password, user.getPassword())) {
-      throw new IllegalArgumentException("Invalid Password");
+      throw new ApiException("Invalid Password", HttpStatus.BAD_REQUEST);
     }
 
     String token = jwtUtil.createToken(username, user.getRole());
@@ -53,10 +56,15 @@ public class UserService {
   }
 
   @Transactional
-  public void updateRole(User user, UserRoleEnum role) {
+  public void updateRole(User user, String role) {
     User savedUser = userRepository.findByUsername(user.getUsername())
         .orElseThrow(() -> new IllegalArgumentException("User not found"));
+    UserRoleEnum roleEnum = UserRoleEnum.contains(role);
 
-    savedUser.setRole(role);
+    if (roleEnum == null) {
+      throw new ApiException("Not Valid Role", HttpStatus.BAD_REQUEST);
+    }
+
+    savedUser.setRole(roleEnum);
   }
 }

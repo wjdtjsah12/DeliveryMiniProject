@@ -1,6 +1,7 @@
 package com.sparta.deliveryminiproject.global.jwt;
 
 import com.sparta.deliveryminiproject.domain.user.entity.UserRoleEnum;
+import com.sparta.deliveryminiproject.global.exception.ApiException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -22,6 +23,7 @@ import java.util.Date;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -75,7 +77,7 @@ public class JwtUtil {
     if (StringUtils.hasText(tokenValue) && tokenValue.startsWith(BEARER_PREFIX)) {
       return tokenValue.substring(7);
     }
-    throw new NullPointerException("Not Found Token");
+    throw new ApiException("Not Found Token", HttpStatus.BAD_REQUEST);
   }
 
   public boolean validateToken(String token) {
