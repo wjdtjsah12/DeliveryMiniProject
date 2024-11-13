@@ -49,7 +49,7 @@ public class ShopService {
   }
 
 
-  public Page<ShopResponseDto> getShopList(int size, String keyword, String sortBy,
+  public Page<ShopResponseDto> getShopList(int size, String searchQuery, String sortBy,
       Direction direction, Pageable pageable) {
 
     Sort sort = Sort.by(direction, sortBy);
@@ -60,7 +60,7 @@ public class ShopService {
 
     pageable = PageRequest.of(pageable.getPageNumber(), size, pageable.getSort());
 
-    return shopRepository.findByShopNameContainingIgnoreCase(keyword, pageable)
+    return shopRepository.findByShopNameContainingIgnoreCase(searchQuery, pageable)
         .map(ShopResponseDto::new);
   }
 

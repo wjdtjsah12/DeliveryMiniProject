@@ -53,12 +53,12 @@ public class ShopController {
   @GetMapping
   public ApiResponse<Page<ShopResponseDto>> getShopList(
       @RequestParam(defaultValue = "10") int size,
-      @RequestParam String keyword,
+      @RequestParam String searchQuery,
       @RequestParam(defaultValue = "createdAt") String sortBy,
       @RequestParam(defaultValue = "DESC") Direction direction,
       Pageable pageable) {
 
-    Page<ShopResponseDto> page = shopService.getShopList(size, keyword, sortBy, direction,
+    Page<ShopResponseDto> page = shopService.getShopList(size, searchQuery, sortBy, direction,
         pageable);
 
     return ApiResponse.success(page);
