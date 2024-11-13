@@ -11,5 +11,6 @@ public interface ShopRepository extends JpaRepository<Shop, UUID> {
 
   Optional<Shop> findShopByShopName(String shopName);
 
-  Page<Shop> findByShopNameContainingIgnoreCase(String keyword, Pageable pageable);
+  Page<Shop> findByShopNameContainingIgnoreCaseAndIsDeletedFalseAndIsHiddenFalse(String searchQuery,
+      Pageable pageable);
 }
