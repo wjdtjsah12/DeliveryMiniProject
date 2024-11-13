@@ -44,8 +44,14 @@ public class ShopService {
 
   public ShopResponseDto getShop(UUID shopId) {
 
-    return new ShopResponseDto(shopRepository.findById(shopId)
-        .orElseThrow(() -> new ApiException("존재하지 않는 가게입니다.", HttpStatus.NOT_FOUND)));
+    Shop shop = shopRepository.findById(shopId)
+        .orElseThrow(() -> new ApiException("존재하지 않는 가게입니다.", HttpStatus.NOT_FOUND));
+
+    if (shop.getIsDeleted() || shop.getIsHidden()) {
+      throw new ApiException("삭제되거나 숨겨진 가게입니다.", HttpStatus.NOT_FOUND);
+    }
+
+    return new ShopResponseDto(shop);
   }
 
 
@@ -60,7 +66,9 @@ public class ShopService {
 
     pageable = PageRequest.of(pageable.getPageNumber(), size, pageable.getSort());
 
-    return shopRepository.findByShopNameContainingIgnoreCase(searchQuery, pageable)
+    // "isDeleted"와 "isHidden"이 false만 조회  ->  추후 queryDSL로 구현 예정
+    return shopRepository.findByShopNameContainingIgnoreCaseAndIsDeletedFalseAndIsHiddenFalse(
+            searchQuery, pageable)
         .map(ShopResponseDto::new);
   }
 
