@@ -7,6 +7,7 @@ import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import java.time.LocalDateTime;
 import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -36,6 +37,7 @@ public abstract class BaseEntity {
   @Column(nullable = false, length = 100)
   private String updatedBy;
 
+  @Setter
   @Column(nullable = false)
   private Boolean isDeleted = false;
 
