@@ -7,6 +7,8 @@ import com.sparta.deliveryminiproject.domain.category.service.CategoryService;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.UUID;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,7 +29,7 @@ public class CategoryController {
   }
 
   // 카테고리 등록
-  @PostMapping("")
+  @PostMapping
   public void createCategory(@Valid CategoryRequestDto requestDto) {
     categoryService.createCategory(requestDto);
   }
@@ -39,10 +41,22 @@ public class CategoryController {
   }
 
   // 카테고리 키워드 검색
-  @GetMapping("")
-  public List<CategoryResponseDto> getCategoryByKeyword(
-      @RequestParam(required = false) String searchQuery) {
-    return categoryService.getCategoryByKeyword(searchQuery);
+  @GetMapping
+  public Page<CategoryResponseDto> getCategoryByKeywordAndIsDeleted(
+      @RequestParam(required = false) String searchQuery,
+      @RequestParam(defaultValue = "false") Boolean isDeleted,
+      @RequestParam(defaultValue = "0") int page,
+      @RequestParam(defaultValue = "10") int size,
+      @RequestParam(defaultValue = "CreatedAt") String sortBy,
+      @RequestParam(defaultValue = "DESC") String direction) {
+    return categoryService.getCategoryByKeywordAndIsDeleted(
+        searchQuery, isDeleted, page, size, sortBy, direction);
+  }
+
+  // 카테고리 정보 보기
+  @GetMapping("/info/{id}")
+  public CategoryResponseDto getCategoryInfoById(@PathVariable UUID id) {
+    return categoryService.getCategoryInfoById(id);
   }
 
   // 카테고리 삭제
