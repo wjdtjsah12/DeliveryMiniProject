@@ -38,6 +38,7 @@ public abstract class BaseEntity {
   private String updatedBy;
 
   @Column(nullable = false)
+  @Setter
   private Boolean isDeleted = false;
 
 }
