@@ -4,7 +4,6 @@ import com.sparta.deliveryminiproject.domain.shop.dto.ShopRequestDto;
 import com.sparta.deliveryminiproject.domain.shop.dto.ShopResponseDto;
 import com.sparta.deliveryminiproject.domain.shop.service.ShopService;
 import com.sparta.deliveryminiproject.domain.user.entity.UserRoleEnum.Authority;
-import com.sparta.deliveryminiproject.global.response.ApiResponse;
 import com.sparta.deliveryminiproject.global.security.UserDetailsImpl;
 import jakarta.validation.Valid;
 import java.util.UUID;
@@ -39,7 +38,7 @@ public class ShopController {
 
     ShopResponseDto shopResponseDto = shopService.createShop(shopRequestDto);
 
-    return ResponseEntity.ok().build();
+    return ResponseEntity.ok(shopResponseDto);
   }
 
   @GetMapping("/{shopId}")
@@ -48,11 +47,11 @@ public class ShopController {
 
     ShopResponseDto shopResponseDto = shopService.getShop(shopId);
 
-    return ResponseEntity.ok().build();
+    return ResponseEntity.ok(shopResponseDto);
   }
 
   @GetMapping
-  public ResponseEntity getShopList(
+  public ResponseEntity<Page<ShopResponseDto>> getShopList(
       @RequestParam(defaultValue = "10") int size,
       @RequestParam String searchQuery,
       @RequestParam(defaultValue = "createdAt") String sortBy,
@@ -62,7 +61,7 @@ public class ShopController {
     Page<ShopResponseDto> page = shopService.getShopList(size, searchQuery, sortBy, direction,
         pageable);
 
-    return ResponseEntity.ok().build();
+    return ResponseEntity.ok(page);
   }
 
   @Secured({Authority.OWNER, Authority.MASTER, Authority.MANAGER})
@@ -75,7 +74,7 @@ public class ShopController {
     ShopResponseDto shopResponseDto = shopService.updateShop(shopId, shopRequestDto,
         userDetails.getUser());
 
-    return ResponseEntity.ok().build();
+    return ResponseEntity.ok(shopResponseDto);
   }
 
   @Secured({Authority.MASTER, Authority.MANAGER})
@@ -85,7 +84,7 @@ public class ShopController {
 
     ShopResponseDto shopResponseDto = shopService.deleteShop(shopId);
 
-    return ResponseEntity.ok().build();
+    return ResponseEntity.ok(shopResponseDto);
   }
 
 

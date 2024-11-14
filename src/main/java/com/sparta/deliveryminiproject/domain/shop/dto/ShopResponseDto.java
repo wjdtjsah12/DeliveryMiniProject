@@ -24,8 +24,6 @@ public class ShopResponseDto {
 
   private Integer deliveryTip;
 
-  private Boolean isDeleted;
-
   private Boolean isHidden;
 
   public ShopResponseDto(Shop shop) {
@@ -35,7 +33,6 @@ public class ShopResponseDto {
     this.description = shop.getDescription();
     this.minDeliveryPrice = shop.getMinDeliveryPrice();
     this.deliveryTip = shop.getDeliveryTip();
-    this.isDeleted = shop.getIsDeleted();
     this.isHidden = shop.getIsHidden();
   }
 }

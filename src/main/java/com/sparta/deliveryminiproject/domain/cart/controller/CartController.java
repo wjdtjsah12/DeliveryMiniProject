@@ -1,12 +1,13 @@
 package com.sparta.deliveryminiproject.domain.cart.controller;
 
 import com.sparta.deliveryminiproject.domain.cart.dto.CartRequestDto;
+import com.sparta.deliveryminiproject.domain.cart.dto.CartResponseDto;
 import com.sparta.deliveryminiproject.domain.cart.entity.Cart;
 import com.sparta.deliveryminiproject.domain.cart.service.CartService;
-import com.sparta.deliveryminiproject.global.response.ApiResponse;
 import com.sparta.deliveryminiproject.global.security.UserDetailsImpl;
 import jakarta.validation.Valid;
 import java.net.URI;
+import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -42,12 +43,19 @@ public class CartController {
         .buildAndExpand(cart.getId())
         .toUri();
 
-    return ResponseEntity.ok().build();
+    return ResponseEntity.created(location).build();
   }
 
   @GetMapping
   public ResponseEntity getCart(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-    return ResponseEntity.ok().build();
+    Optional<CartResponseDto> cartResponseDto = cartService.findMenuListInCart(
+        userDetails.getUser());
+
+    if (cartResponseDto.isEmpty()) {
+      return ResponseEntity.noContent().build();
+    }
+
+    return ResponseEntity.ok(cartResponseDto.get());
   }
 
   @PutMapping("/{cartId}")
