@@ -27,7 +27,7 @@ public class OrderService {
         .forEach(order::addCartList);
 
     order.setOrderType(
-        user.getRole().equals(UserRoleEnum.OWNER) ? OrderType.STORE : OrderType.ONLINE);
+        user.getRole().equals(UserRoleEnum.OWNER) ? OrderType.OFFLINE : OrderType.ONLINE);
 
     order.calculateAndSetTotalPrice();
 
