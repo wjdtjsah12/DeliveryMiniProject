@@ -70,7 +70,7 @@ public class ReviewService {
 
     pageable = PageRequest.of(pageable.getPageNumber(), size, pageable.getSort());
 
-    Shop shop = shopRepository.findShopByIdOrElseThrow(shopId);
+    shopRepository.findShopByIdOrElseThrow(shopId);
 
     Page<ReviewResponseDto> pagedReivewResponseDtoList
         = reviewRepository.findByShopIdAndIsDeletedFalse(shopId, pageable)
