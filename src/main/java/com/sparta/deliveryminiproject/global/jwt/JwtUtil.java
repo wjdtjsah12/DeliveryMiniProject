@@ -2,6 +2,7 @@ package com.sparta.deliveryminiproject.global.jwt;
 
 import com.sparta.deliveryminiproject.domain.user.entity.UserRoleEnum;
 import com.sparta.deliveryminiproject.global.exception.ApiException;
+import com.sparta.deliveryminiproject.global.security.RedisUtil;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -20,15 +21,17 @@ import java.net.URLEncoder;
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 @Component
+@RequiredArgsConstructor
 public class JwtUtil {
+
+  private final RedisUtil redisUtil;
 
   public static final String AUTHORIZATION_HEADER = "Authorization";
   public static final String AUTHORIZATION_KEY = "auth";
@@ -73,6 +76,21 @@ public class JwtUtil {
     }
   }
 
+  public void deleteJwtToCookie(HttpServletRequest req, HttpServletResponse res) {
+    Cookie[] cookies = req.getCookies();
+
+    if (cookies != null) {
+      for (Cookie cookie : cookies) {
+        if (cookie.getName().equals(AUTHORIZATION_HEADER)) {
+          cookie.setMaxAge(0);
+          cookie.setPath("/");
+          res.addCookie(cookie);
+          break;
+        }
+      }
+    }
+  }
+
   public String substringToken(String tokenValue) {
     if (StringUtils.hasText(tokenValue) && tokenValue.startsWith(BEARER_PREFIX)) {
       return tokenValue.substring(7);
@@ -81,19 +99,21 @@ public class JwtUtil {
   }
 
   public boolean validateToken(String token) {
+    if (redisUtil.isTokenBlacklisted(token)) {
+      throw new ApiException("Signed out User", HttpStatus.FORBIDDEN);
+    }
     try {
       Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
       return true;
     } catch (SecurityException | MalformedJwtException | SignatureException e) {
-      System.out.println("Invalid JWT signature, 유효하지 않는 JWT 서명 입니다.");
+      throw new ApiException("Invalid JWT signature, 유효하지 않는 JWT 서명 입니다.", HttpStatus.FORBIDDEN);
     } catch (ExpiredJwtException e) {
-      System.out.println("Expired JWT token, 만료된 JWT token 입니다.");
+      throw new ApiException("Expired JWT token, 만료된 JWT token 입니다.", HttpStatus.FORBIDDEN);
     } catch (UnsupportedJwtException e) {
-      System.out.println("Unsupported JWT token, 지원되지 않는 JWT 토큰 입니다.");
+      throw new ApiException("Unsupported JWT token, 지원되지 않는 JWT 토큰 입니다.", HttpStatus.FORBIDDEN);
     } catch (IllegalArgumentException e) {
-      System.out.println("JWT claims is empty, 잘못된 JWT 토큰 입니다.");
+      throw new ApiException("JWT claims is empty, 잘못된 JWT 토큰 입니다.", HttpStatus.FORBIDDEN);
     }
-    return false;
   }
 
   public Claims getUserInfoFromToken(String token) {
