@@ -11,6 +11,11 @@ import com.sparta.deliveryminiproject.domain.user.entity.UserRoleEnum;
 import com.sparta.deliveryminiproject.global.exception.ApiException;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -50,5 +55,27 @@ public class MenuService {
         .orElseThrow(() -> new ApiException("존재하지 않는 메뉴 ID 입니다.", HttpStatus.BAD_REQUEST));
 
     return new MenuResponseDto(menu);
+  }
+
+  public Page<MenuResponseDto> getMenuList(UUID shopId, int size, String searchQuery, String sortBy,
+      Direction direction, Pageable pageable) {
+
+    Sort sort = Sort.by(direction, sortBy);
+    pageable = PageRequest.of(pageable.getPageNumber(), size, sort);
+
+    // size를 10, 30, 50로 제한
+    size = (size == 30 || size == 50) ? size : 10;  // size가 30이나 50이 아니면 10으로 고정
+
+    pageable = PageRequest.of(pageable.getPageNumber(), size, pageable.getSort());
+
+    Shop shop = shopRepository.findById(shopId)
+        .orElseThrow(() -> new ApiException("존재하지 않는 가게 ID 입니다.", HttpStatus.BAD_REQUEST));
+
+    Page<MenuResponseDto> pagedMenuResponseDtoList
+        = menuRepository.findByMenuNameContainingIgnoreCaseAndIsDeletedFalseAndIsHiddenFalseAndShopId(
+            searchQuery, pageable, shopId)
+        .map(MenuResponseDto::new);
+
+    return pagedMenuResponseDtoList;
   }
 }
