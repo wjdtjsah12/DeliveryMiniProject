@@ -5,6 +5,7 @@ import com.sparta.deliveryminiproject.domain.user.dto.SignupRequestDto;
 import com.sparta.deliveryminiproject.domain.user.service.UserService;
 import com.sparta.deliveryminiproject.global.jwt.JwtUtil;
 import com.sparta.deliveryminiproject.global.security.UserDetailsImpl;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +36,11 @@ public class UserController {
     userService.signin(requestDto, response);
   }
 
+  @PostMapping("/signout")
+  public void signout(@AuthenticationPrincipal UserDetailsImpl userDetails,
+      HttpServletRequest request, HttpServletResponse response) {
+    userService.signout(userDetails.getUser(), request, response);
+  }
 
   @PostMapping("/role/{role}")
   public void updateRole(@PathVariable String role,

@@ -7,6 +7,8 @@ import com.sparta.deliveryminiproject.domain.user.entity.UserRoleEnum;
 import com.sparta.deliveryminiproject.domain.user.repository.UserRepository;
 import com.sparta.deliveryminiproject.global.exception.ApiException;
 import com.sparta.deliveryminiproject.global.jwt.JwtUtil;
+import com.sparta.deliveryminiproject.global.security.RedisUtil;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import java.util.Optional;
@@ -22,6 +24,7 @@ public class UserService {
 
   private final UserRepository userRepository;
   private final PasswordEncoder passwordEncoder;
+  private final RedisUtil redisUtil;
   private final JwtUtil jwtUtil;
 
   public void signup(@Valid SignupRequestDto requestDto) {
@@ -53,6 +56,16 @@ public class UserService {
 
     String token = jwtUtil.createToken(username, user.getRole());
     jwtUtil.addJwtToCookie(token, response);
+  }
+
+  public void signout(User user, HttpServletRequest request, HttpServletResponse response) {
+
+    userRepository.findByUsername(user.getUsername())
+        .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+    String token = jwtUtil.getTokenFromRequest(request);
+    redisUtil.addToBlackList(token);
+    jwtUtil.deleteJwtToCookie(request, response);
   }
 
   @Transactional
