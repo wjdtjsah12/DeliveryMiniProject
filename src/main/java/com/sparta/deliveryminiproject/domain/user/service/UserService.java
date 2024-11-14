@@ -7,7 +7,7 @@ import com.sparta.deliveryminiproject.domain.user.entity.UserRoleEnum;
 import com.sparta.deliveryminiproject.domain.user.repository.UserRepository;
 import com.sparta.deliveryminiproject.global.exception.ApiException;
 import com.sparta.deliveryminiproject.global.jwt.JwtUtil;
-import com.sparta.deliveryminiproject.global.service.TokenBlackListService;
+import com.sparta.deliveryminiproject.global.security.RedisUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -24,7 +24,7 @@ public class UserService {
 
   private final UserRepository userRepository;
   private final PasswordEncoder passwordEncoder;
-  private final TokenBlackListService tokenBlackListService;
+  private final RedisUtil redisUtil;
   private final JwtUtil jwtUtil;
 
   public void signup(@Valid SignupRequestDto requestDto) {
@@ -64,7 +64,7 @@ public class UserService {
         .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
     String token = jwtUtil.getTokenFromRequest(request);
-    tokenBlackListService.addToBlackList(token);
+    redisUtil.addToBlackList(token);
     jwtUtil.deleteJwtToCookie(request, response);
   }
 

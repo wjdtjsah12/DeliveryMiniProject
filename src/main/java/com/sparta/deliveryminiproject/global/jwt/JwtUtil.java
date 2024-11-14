@@ -2,7 +2,7 @@ package com.sparta.deliveryminiproject.global.jwt;
 
 import com.sparta.deliveryminiproject.domain.user.entity.UserRoleEnum;
 import com.sparta.deliveryminiproject.global.exception.ApiException;
-import com.sparta.deliveryminiproject.global.service.TokenBlackListService;
+import com.sparta.deliveryminiproject.global.security.RedisUtil;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -31,7 +31,7 @@ import org.springframework.util.StringUtils;
 @RequiredArgsConstructor
 public class JwtUtil {
 
-  private final TokenBlackListService tokenBlackListService;
+  private final RedisUtil redisUtil;
 
   public static final String AUTHORIZATION_HEADER = "Authorization";
   public static final String AUTHORIZATION_KEY = "auth";
@@ -99,7 +99,7 @@ public class JwtUtil {
   }
 
   public boolean validateToken(String token) {
-    if (tokenBlackListService.isTokenBlacklisted(token)) {
+    if (redisUtil.isTokenBlacklisted(token)) {
       throw new ApiException("Signed out User", HttpStatus.FORBIDDEN);
     }
     try {

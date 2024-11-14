@@ -1,12 +1,12 @@
-package com.sparta.deliveryminiproject.global.service;
+package com.sparta.deliveryminiproject.global.security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
-@Service
+@Component
 @RequiredArgsConstructor
-public class TokenBlackListService {
+public class RedisUtil {
 
   private final RedisTemplate<String, String> redisTemplate;
 
@@ -17,4 +17,5 @@ public class TokenBlackListService {
   public boolean isTokenBlacklisted(String token) {
     return redisTemplate.hasKey(token);
   }
+
 }
