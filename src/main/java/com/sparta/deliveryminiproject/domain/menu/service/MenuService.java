@@ -6,8 +6,8 @@ import com.sparta.deliveryminiproject.domain.menu.entity.Menu;
 import com.sparta.deliveryminiproject.domain.menu.repository.MenuRepository;
 import com.sparta.deliveryminiproject.domain.shop.entity.Shop;
 import com.sparta.deliveryminiproject.domain.shop.repository.ShopRepository;
+import com.sparta.deliveryminiproject.domain.shop.service.ShopService;
 import com.sparta.deliveryminiproject.domain.user.entity.User;
-import com.sparta.deliveryminiproject.domain.user.entity.UserRoleEnum;
 import com.sparta.deliveryminiproject.global.exception.ApiException;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -32,13 +32,7 @@ public class MenuService {
     Shop shop = shopRepository.findById(shopId)
         .orElseThrow(() -> new ApiException("존재하지 않는 가게 ID 입니다.", HttpStatus.BAD_REQUEST));
 
-    // 가게 소유자만 가게 정보를 수정 할 수 있도록 검증
-    if (!(user.getRole().equals(UserRoleEnum.MANAGER) ||
-        user.getRole().equals(UserRoleEnum.MASTER))) {
-      if (!shop.getUser().getId().equals(user.getId())) {
-        throw new ApiException("가게 주인이 아닙니다.", HttpStatus.BAD_REQUEST);
-      }
-    }
+    ShopService.validateShopOwner(user, shop);
 
     Menu menu = new Menu(menuRequestDto, shop);
 
@@ -90,13 +84,7 @@ public class MenuService {
     Menu menu = menuRepository.findById(menuId)
         .orElseThrow(() -> new ApiException("존재하지 않는 메뉴 ID 입니다.", HttpStatus.BAD_REQUEST));
 
-    // 가게 소유자만 가게 정보를 수정 할 수 있도록 검증
-    if (!(user.getRole().equals(UserRoleEnum.MANAGER) ||
-        user.getRole().equals(UserRoleEnum.MASTER))) {
-      if (!shop.getUser().getId().equals(user.getId())) {
-        throw new ApiException("가게 주인이 아닙니다.", HttpStatus.BAD_REQUEST);
-      }
-    }
+    ShopService.validateShopOwner(user, shop);
 
     menu.update(menuRequestDto);
 
@@ -112,13 +100,7 @@ public class MenuService {
     Menu menu = menuRepository.findById(menuId)
         .orElseThrow(() -> new ApiException("존재하지 않는 메뉴 ID 입니다.", HttpStatus.BAD_REQUEST));
 
-    // 가게 소유자만 가게 정보를 수정 할 수 있도록 검증
-    if (!(user.getRole().equals(UserRoleEnum.MANAGER) ||
-        user.getRole().equals(UserRoleEnum.MASTER))) {
-      if (!shop.getUser().getId().equals(user.getId())) {
-        throw new ApiException("가게 주인이 아닙니다.", HttpStatus.BAD_REQUEST);
-      }
-    }
+    ShopService.validateShopOwner(user, shop);
 
     menu.setIsDeleted(true);
 
