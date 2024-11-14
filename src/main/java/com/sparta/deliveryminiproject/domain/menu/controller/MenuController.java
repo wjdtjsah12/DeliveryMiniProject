@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -65,5 +66,19 @@ public class MenuController {
         pageable);
 
     return ResponseEntity.ok(pagedMenuDtoList);
+  }
+
+  @Secured({Authority.OWNER, Authority.MANAGER, Authority.MASTER})
+  @PutMapping("/{menuId}")
+  public ResponseEntity updateMenu(
+      @ModelAttribute MenuRequestDto menuRequestDto,
+      @PathVariable UUID shopId,
+      @PathVariable UUID menuId,
+      @AuthenticationPrincipal UserDetailsImpl userDetails) {
+
+    MenuResponseDto menuResponseDto = menuService.updateMenu(menuRequestDto, shopId, menuId,
+        userDetails.getUser());
+
+    return ResponseEntity.ok(menuResponseDto);
   }
 }

@@ -42,9 +42,7 @@ public class Menu extends BaseEntity {
 
 
   public Menu(MenuRequestDto menuRequestDto, Shop shop) {
-    if (menuRequestDto.getMenuName() != null) {
-      this.menuName = menuRequestDto.getMenuName();
-    }
+    this.menuName = menuRequestDto.getMenuName();
     if (menuRequestDto.getDescription() != null) {
       this.description = menuRequestDto.getDescription();
     }
@@ -54,4 +52,18 @@ public class Menu extends BaseEntity {
     this.shop = shop;
   }
 
+  public void update(MenuRequestDto menuRequestDto) {
+    if (menuRequestDto.getMenuName() != null) {
+      this.menuName = menuRequestDto.getMenuName();
+    }
+    if (menuRequestDto.getDescription() != null) {
+      this.description = menuRequestDto.getDescription();
+    }
+    if (menuRequestDto.getPrice() != null) {
+      this.price = menuRequestDto.getPrice();
+    }
+    if (menuRequestDto.getIsHidden() != null) {
+      this.isHidden = menuRequestDto.getIsHidden();
+    }
+  }
 }

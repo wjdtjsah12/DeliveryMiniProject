@@ -19,4 +19,6 @@ public class MenuRequestDto {
 
   private Integer price;
 
+  private Boolean isHidden;
+
 }
