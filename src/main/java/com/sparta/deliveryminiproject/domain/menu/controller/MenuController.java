@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,6 +33,16 @@ public class MenuController {
 
     MenuResponseDto menuResponseDto = menuService.createMenu(
         menuRequestDto, shopId, userDetails.getUser());
+
+    return ResponseEntity.ok(menuResponseDto);
+  }
+
+  @GetMapping("/{menuId}")
+  public ResponseEntity getMenu(
+      @PathVariable UUID menuId,
+      @PathVariable UUID shopId) {
+
+    MenuResponseDto menuResponseDto = menuService.getMenu(menuId, shopId);
 
     return ResponseEntity.ok(menuResponseDto);
   }

@@ -40,4 +40,15 @@ public class MenuService {
 
     return new MenuResponseDto(menu);
   }
+
+  public MenuResponseDto getMenu(UUID menuId, UUID shopId) {
+
+    shopRepository.findById(shopId)
+        .orElseThrow(() -> new ApiException("존재하지 않는 가게 ID 입니다.", HttpStatus.BAD_REQUEST));
+
+    Menu menu = menuRepository.findById(menuId)
+        .orElseThrow(() -> new ApiException("존재하지 않는 메뉴 ID 입니다.", HttpStatus.BAD_REQUEST));
+
+    return new MenuResponseDto(menu);
+  }
 }
