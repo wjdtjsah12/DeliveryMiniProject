@@ -13,6 +13,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -78,6 +79,19 @@ public class MenuController {
 
     MenuResponseDto menuResponseDto = menuService.updateMenu(menuRequestDto, shopId, menuId,
         userDetails.getUser());
+
+    return ResponseEntity.ok(menuResponseDto);
+  }
+
+
+  @Secured({Authority.OWNER, Authority.MANAGER, Authority.MASTER})
+  @DeleteMapping("/{menuId}")
+  public ResponseEntity deleteMenu(
+      @PathVariable UUID shopId,
+      @PathVariable UUID menuId,
+      @AuthenticationPrincipal UserDetailsImpl userDetails) {
+
+    MenuResponseDto menuResponseDto = menuService.deleteMenu(shopId, menuId, userDetails.getUser());
 
     return ResponseEntity.ok(menuResponseDto);
   }

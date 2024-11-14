@@ -102,4 +102,26 @@ public class MenuService {
 
     return new MenuResponseDto(menu);
   }
+
+  @Transactional
+  public MenuResponseDto deleteMenu(UUID shopId, UUID menuId, User user) {
+
+    Shop shop = shopRepository.findById(shopId)
+        .orElseThrow(() -> new ApiException("존재하지 않는 가게 ID 입니다.", HttpStatus.BAD_REQUEST));
+
+    Menu menu = menuRepository.findById(menuId)
+        .orElseThrow(() -> new ApiException("존재하지 않는 메뉴 ID 입니다.", HttpStatus.BAD_REQUEST));
+
+    // 가게 소유자만 가게 정보를 수정 할 수 있도록 검증
+    if (!(user.getRole().equals(UserRoleEnum.MANAGER) ||
+        user.getRole().equals(UserRoleEnum.MASTER))) {
+      if (!shop.getUser().getId().equals(user.getId())) {
+        throw new ApiException("가게 주인이 아닙니다.", HttpStatus.BAD_REQUEST);
+      }
+    }
+
+    menu.setIsDeleted(true);
+
+    return new MenuResponseDto(menu);
+  }
 }
