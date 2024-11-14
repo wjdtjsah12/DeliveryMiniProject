@@ -18,6 +18,7 @@ import java.util.UUID;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "p_cart")
@@ -46,6 +47,7 @@ public class Cart extends BaseEntity {
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "order_id")
+  @Setter
   private Order order;
 
   @Builder
