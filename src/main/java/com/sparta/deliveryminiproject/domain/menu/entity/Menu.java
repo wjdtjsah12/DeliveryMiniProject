@@ -10,11 +10,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Entity
+@Entity(name = "p_menu")
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "p_menu")
+@Table
 public class Menu {
 
   @Id

@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -33,25 +34,25 @@ public class ShopController {
 
   @Secured({Authority.MASTER, Authority.MANAGER})
   @PostMapping
-  public ApiResponse createShop(
+  public ResponseEntity createShop(
       @ModelAttribute ShopRequestDto shopRequestDto) {
 
     ShopResponseDto shopResponseDto = shopService.createShop(shopRequestDto);
 
-    return ApiResponse.success(shopResponseDto);
+    return ResponseEntity.ok().build();
   }
 
   @GetMapping("/{shopId}")
-  public ApiResponse getShop(
+  public ResponseEntity getShop(
       @PathVariable UUID shopId) {
 
     ShopResponseDto shopResponseDto = shopService.getShop(shopId);
 
-    return ApiResponse.success(shopResponseDto);
+    return ResponseEntity.ok().build();
   }
 
   @GetMapping
-  public ApiResponse<Page<ShopResponseDto>> getShopList(
+  public ResponseEntity getShopList(
       @RequestParam(defaultValue = "10") int size,
       @RequestParam String searchQuery,
       @RequestParam(defaultValue = "createdAt") String sortBy,
@@ -61,12 +62,12 @@ public class ShopController {
     Page<ShopResponseDto> page = shopService.getShopList(size, searchQuery, sortBy, direction,
         pageable);
 
-    return ApiResponse.success(page);
+    return ResponseEntity.ok().build();
   }
 
   @Secured({Authority.OWNER, Authority.MASTER, Authority.MANAGER})
   @PutMapping("/{shopId}")
-  public ApiResponse updateShop(
+  public ResponseEntity updateShop(
       @PathVariable UUID shopId,
       @Valid @ModelAttribute ShopRequestDto shopRequestDto,
       @AuthenticationPrincipal UserDetailsImpl userDetails) {
@@ -74,17 +75,17 @@ public class ShopController {
     ShopResponseDto shopResponseDto = shopService.updateShop(shopId, shopRequestDto,
         userDetails.getUser());
 
-    return ApiResponse.success(shopResponseDto);
+    return ResponseEntity.ok().build();
   }
 
   @Secured({Authority.MASTER, Authority.MANAGER})
   @DeleteMapping("/{shopId}")
-  public ApiResponse deleteShop(
+  public ResponseEntity deleteShop(
       @PathVariable UUID shopId) {
 
     ShopResponseDto shopResponseDto = shopService.deleteShop(shopId);
 
-    return ApiResponse.success(shopResponseDto);
+    return ResponseEntity.ok().build();
   }
 
 

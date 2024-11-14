@@ -39,7 +39,6 @@ public abstract class BaseEntity {
 
   @Setter
   @Column(nullable = false)
-  @Setter
   private Boolean isDeleted = false;
 
 }
