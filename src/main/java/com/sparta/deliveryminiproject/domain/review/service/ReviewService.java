@@ -83,19 +83,45 @@ public class ReviewService {
   public ReviewResponseDto updateReview(UUID shopId, UUID reviewId,
       ReviewRequestDto reviewRequestDto, User user) {
 
-    shopRepository.findShopByIdOrElseThrow(shopId);
+    Shop shop = shopRepository.findShopByIdOrElseThrow(shopId);
     Review review = reviewRepository.findReviewByIdOrElseThrow(reviewId);
 
-    if (!(user.getRole().equals(UserRoleEnum.MANAGER) ||
-        user.getRole().equals(UserRoleEnum.MASTER))) {
-      if (!review.getCreatedBy().equals(user.getUsername())) {
-        throw new ApiException("리뷰 작성자만 수정 할 수 있습니다.", HttpStatus.UNAUTHORIZED);
-      }
+    if (!shop.getId().equals(review.getShop().getId())) {
+      throw new ApiException("해당 가게의 리뷰가 아닙니다.", HttpStatus.BAD_REQUEST);
     }
+
+    validateUserIsReviewAuthor(user, review);
 
     review.update(reviewRequestDto);
 
     return new ReviewResponseDto(review);
+  }
+
+  @Transactional
+  public ReviewResponseDto deleteReview(UUID shopId, UUID reviewId, User user) {
+
+    Shop shop = shopRepository.findShopByIdOrElseThrow(shopId);
+    Review review = reviewRepository.findReviewByIdOrElseThrow(reviewId);
+
+    if (!shop.getId().equals(review.getShop().getId())) {
+      throw new ApiException("해당 가게의 리뷰가 아닙니다.", HttpStatus.BAD_REQUEST);
+    }
+
+    validateUserIsReviewAuthor(user, review);
+
+    review.setIsDeleted(true);
+
+    return new ReviewResponseDto(review);
+  }
+
+
+  private void validateUserIsReviewAuthor(User user, Review review) {
+    if (!(user.getRole().equals(UserRoleEnum.MANAGER) ||
+        user.getRole().equals(UserRoleEnum.MASTER))) {
+      if (!review.getCreatedBy().equals(user.getUsername())) {
+        throw new ApiException("리뷰 작성자가 아닙니다.", HttpStatus.UNAUTHORIZED);
+      }
+    }
   }
 
 
