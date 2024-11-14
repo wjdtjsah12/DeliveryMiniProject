@@ -1,9 +1,10 @@
 package com.sparta.deliveryminiproject.domain.cart.entity;
 
+import com.sparta.deliveryminiproject.domain.menu.entity.Menu;
 import com.sparta.deliveryminiproject.domain.order.entity.Order;
-import com.sparta.deliveryminiproject.domain.shop.entity.Menu;
 import com.sparta.deliveryminiproject.domain.shop.entity.Shop;
 import com.sparta.deliveryminiproject.domain.user.entity.User;
+import com.sparta.deliveryminiproject.global.entity.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -17,13 +18,12 @@ import java.util.UUID;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
 @Table(name = "p_cart")
 @Getter
 @NoArgsConstructor
-public class Cart {
+public class Cart extends BaseEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
@@ -47,10 +47,6 @@ public class Cart {
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "order_id")
   private Order order;
-
-  @Column(nullable = false)
-  @Setter
-  private Boolean isDeleted = false;
 
   @Builder
   private Cart(UUID id, int quantity, User user, Menu menu, Shop shop, Order order) {
