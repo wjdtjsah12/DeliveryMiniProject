@@ -9,6 +9,7 @@ import com.sparta.deliveryminiproject.domain.review.repository.ReviewRepository;
 import com.sparta.deliveryminiproject.domain.shop.entity.Shop;
 import com.sparta.deliveryminiproject.domain.shop.repository.ShopRepository;
 import com.sparta.deliveryminiproject.domain.user.entity.User;
+import com.sparta.deliveryminiproject.domain.user.entity.UserRoleEnum;
 import com.sparta.deliveryminiproject.global.exception.ApiException;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -76,4 +78,25 @@ public class ReviewService {
 
     return pagedReivewResponseDtoList;
   }
+
+  @Transactional
+  public ReviewResponseDto updateReview(UUID shopId, UUID reviewId,
+      ReviewRequestDto reviewRequestDto, User user) {
+
+    shopRepository.findShopByIdOrElseThrow(shopId);
+    Review review = reviewRepository.findReviewByIdOrElseThrow(reviewId);
+
+    if (!(user.getRole().equals(UserRoleEnum.MANAGER) ||
+        user.getRole().equals(UserRoleEnum.MASTER))) {
+      if (!review.getCreatedBy().equals(user.getUsername())) {
+        throw new ApiException("리뷰 작성자만 수정 할 수 있습니다.", HttpStatus.UNAUTHORIZED);
+      }
+    }
+
+    review.update(reviewRequestDto);
+
+    return new ReviewResponseDto(review);
+  }
+
+
 }

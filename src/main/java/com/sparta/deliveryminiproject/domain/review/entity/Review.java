@@ -50,4 +50,9 @@ public class Review extends BaseEntity {
       this.content = reviewRequestDto.getContent();
     }
   }
+
+  public void update(ReviewRequestDto reviewRequestDto) {
+    this.rating = reviewRequestDto.getRating();
+    this.content = reviewRequestDto.getContent();
+  }
 }
