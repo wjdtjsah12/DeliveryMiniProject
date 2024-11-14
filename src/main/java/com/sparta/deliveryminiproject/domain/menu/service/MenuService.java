@@ -8,7 +8,6 @@ import com.sparta.deliveryminiproject.domain.shop.entity.Shop;
 import com.sparta.deliveryminiproject.domain.shop.repository.ShopRepository;
 import com.sparta.deliveryminiproject.domain.shop.service.ShopService;
 import com.sparta.deliveryminiproject.domain.user.entity.User;
-import com.sparta.deliveryminiproject.global.exception.ApiException;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -16,7 +15,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,8 +27,7 @@ public class MenuService {
 
   public MenuResponseDto createMenu(MenuRequestDto menuRequestDto, UUID shopId, User user) {
 
-    Shop shop = shopRepository.findById(shopId)
-        .orElseThrow(() -> new ApiException("존재하지 않는 가게 ID 입니다.", HttpStatus.BAD_REQUEST));
+    Shop shop = shopRepository.findShopByIdOrElseThrow(shopId);
 
     ShopService.validateShopOwner(user, shop);
 
@@ -43,11 +40,9 @@ public class MenuService {
 
   public MenuResponseDto getMenu(UUID menuId, UUID shopId) {
 
-    shopRepository.findById(shopId)
-        .orElseThrow(() -> new ApiException("존재하지 않는 가게 ID 입니다.", HttpStatus.BAD_REQUEST));
+    Shop shop = shopRepository.findShopByIdOrElseThrow(shopId);
 
-    Menu menu = menuRepository.findById(menuId)
-        .orElseThrow(() -> new ApiException("존재하지 않는 메뉴 ID 입니다.", HttpStatus.BAD_REQUEST));
+    Menu menu = menuRepository.findMenuByIdOrElseThrow(menuId);
 
     return new MenuResponseDto(menu);
   }
@@ -63,8 +58,7 @@ public class MenuService {
 
     pageable = PageRequest.of(pageable.getPageNumber(), size, pageable.getSort());
 
-    Shop shop = shopRepository.findById(shopId)
-        .orElseThrow(() -> new ApiException("존재하지 않는 가게 ID 입니다.", HttpStatus.BAD_REQUEST));
+    Shop shop = shopRepository.findShopByIdOrElseThrow(shopId);
 
     Page<MenuResponseDto> pagedMenuResponseDtoList
         = menuRepository.findByMenuNameContainingIgnoreCaseAndIsDeletedFalseAndIsHiddenFalseAndShopId(
@@ -78,11 +72,9 @@ public class MenuService {
   public MenuResponseDto updateMenu(MenuRequestDto menuRequestDto, UUID shopId, UUID menuId,
       User user) {
 
-    Shop shop = shopRepository.findById(shopId)
-        .orElseThrow(() -> new ApiException("존재하지 않는 가게 ID 입니다.", HttpStatus.BAD_REQUEST));
+    Shop shop = shopRepository.findShopByIdOrElseThrow(shopId);
 
-    Menu menu = menuRepository.findById(menuId)
-        .orElseThrow(() -> new ApiException("존재하지 않는 메뉴 ID 입니다.", HttpStatus.BAD_REQUEST));
+    Menu menu = menuRepository.findMenuByIdOrElseThrow(menuId);
 
     ShopService.validateShopOwner(user, shop);
 
@@ -94,11 +86,9 @@ public class MenuService {
   @Transactional
   public MenuResponseDto deleteMenu(UUID shopId, UUID menuId, User user) {
 
-    Shop shop = shopRepository.findById(shopId)
-        .orElseThrow(() -> new ApiException("존재하지 않는 가게 ID 입니다.", HttpStatus.BAD_REQUEST));
+    Shop shop = shopRepository.findShopByIdOrElseThrow(shopId);
 
-    Menu menu = menuRepository.findById(menuId)
-        .orElseThrow(() -> new ApiException("존재하지 않는 메뉴 ID 입니다.", HttpStatus.BAD_REQUEST));
+    Menu menu = menuRepository.findMenuByIdOrElseThrow(menuId);
 
     ShopService.validateShopOwner(user, shop);
 

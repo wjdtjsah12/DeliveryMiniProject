@@ -44,8 +44,7 @@ public class ShopService {
 
   public ShopResponseDto getShop(UUID shopId) {
 
-    Shop shop = shopRepository.findById(shopId)
-        .orElseThrow(() -> new ApiException("존재하지 않는 가게입니다.", HttpStatus.NOT_FOUND));
+    Shop shop = shopRepository.findShopByIdOrElseThrow(shopId);
 
     if (shop.getIsDeleted() || shop.getIsHidden()) {
       throw new ApiException("삭제되거나 숨겨진 가게입니다.", HttpStatus.NOT_FOUND);
@@ -75,8 +74,7 @@ public class ShopService {
   @Transactional
   public ShopResponseDto updateShop(UUID shopId, ShopRequestDto shopRequestDto, User user) {
 
-    Shop shop = shopRepository.findById(shopId)
-        .orElseThrow(() -> new ApiException("존재하지 않는 가게입니다.", HttpStatus.NOT_FOUND));
+    Shop shop = shopRepository.findShopByIdOrElseThrow(shopId);
 
     ShopService.validateShopOwner(user, shop);
 
@@ -88,8 +86,7 @@ public class ShopService {
   @Transactional
   public ShopResponseDto deleteShop(UUID shopId) {
 
-    Shop shop = shopRepository.findById(shopId)
-        .orElseThrow(() -> new ApiException("존재하지 않는 가게입니다.", HttpStatus.NOT_FOUND));
+    Shop shop = shopRepository.findShopByIdOrElseThrow(shopId);
 
     shop.setIsDeleted(true);
 
