@@ -1,6 +1,7 @@
 package com.sparta.deliveryminiproject.domain.review.dto;
 
 import com.sparta.deliveryminiproject.domain.review.entity.Review;
+import java.time.LocalDateTime;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -25,6 +26,10 @@ public class ReviewResponseDto {
 
   private String username;
 
+  private LocalDateTime createdAt;
+
+  private LocalDateTime updatedAt;
+
   public ReviewResponseDto(Review review) {
     this.shopId = review.getShop().getId();
     this.menuId = review.getMenu().getId();
@@ -32,5 +37,7 @@ public class ReviewResponseDto {
     this.rating = review.getRating();
     this.content = review.getContent();
     this.username = review.getCreatedBy();
+    this.createdAt = review.getCreatedAt();
+    this.updatedAt = review.getUpdatedAt();
   }
 }
