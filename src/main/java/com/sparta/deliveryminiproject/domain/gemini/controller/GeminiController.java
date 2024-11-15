@@ -18,7 +18,7 @@ public class GeminiController {
   }
 
   @PostMapping
-  public ResponseEntity<?> sendGeminiMessage(GeminiRequestDto requestDto) {
-    return geminiUtil.sendGeminiMessage(requestDto);
+  public ResponseEntity<?> requestGeminiResponse(GeminiRequestDto requestDto) {
+    return geminiUtil.requestGeminiResponse(requestDto);
   }
 }

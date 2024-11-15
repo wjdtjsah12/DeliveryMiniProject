@@ -8,7 +8,7 @@ import org.springframework.web.client.RestTemplate;
 @Configuration
 public class GeminiRestTemplateConfig {
 
-  @Bean
+  @Bean(name = "geminiRestTemplate")
   public RestTemplate geminiRestTemplate() {
     return new RestTemplate();
 
