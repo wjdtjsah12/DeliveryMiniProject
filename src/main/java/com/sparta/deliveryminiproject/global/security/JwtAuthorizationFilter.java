@@ -31,6 +31,12 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
   protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res,
       FilterChain filterChain) throws ServletException, IOException {
 
+    String path = req.getRequestURI();
+    if (path.equals("/api/users/signup") || path.equals("/api/users/signin")) {
+      filterChain.doFilter(req, res);
+      return;
+    }
+
     String tokenValue = jwtUtil.getTokenFromRequest(req);
 
     if (StringUtils.hasText(tokenValue)) {
@@ -52,7 +58,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
       res.setStatus(HttpStatus.FORBIDDEN.value());
       res.setContentType("application/json");
       res.getWriter().write(new ObjectMapper().writeValueAsString(
-          new ApiException("토큰이 없습니다.", HttpStatus.FORBIDDEN)
+          new ApiException("Token Null", HttpStatus.FORBIDDEN)
       ));
       return;
     }
