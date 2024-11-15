@@ -11,6 +11,7 @@ import com.sparta.deliveryminiproject.global.security.RedisUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import java.util.Date;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -64,7 +65,11 @@ public class UserService {
         .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
     String token = jwtUtil.getTokenFromRequest(request);
-    redisUtil.addToBlackList(token);
+    Long expSec = jwtUtil.getUserInfoFromToken(jwtUtil.substringToken(token)).getExpiration()
+        .getTime();
+    Long nowSec = new Date().getTime();
+
+    redisUtil.addToBlackList(token, expSec - nowSec);
     jwtUtil.deleteJwtToCookie(request, response);
   }
 

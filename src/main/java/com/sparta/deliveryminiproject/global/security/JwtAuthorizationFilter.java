@@ -1,5 +1,7 @@
 package com.sparta.deliveryminiproject.global.security;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sparta.deliveryminiproject.global.exception.ApiException;
 import com.sparta.deliveryminiproject.global.jwt.JwtUtil;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
@@ -7,6 +9,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -45,6 +48,13 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         System.out.println(e.getMessage());
         return;
       }
+    } else {
+      res.setStatus(HttpStatus.FORBIDDEN.value());
+      res.setContentType("application/json");
+      res.getWriter().write(new ObjectMapper().writeValueAsString(
+          new ApiException("토큰이 없습니다.", HttpStatus.FORBIDDEN)
+      ));
+      return;
     }
 
     filterChain.doFilter(req, res);
