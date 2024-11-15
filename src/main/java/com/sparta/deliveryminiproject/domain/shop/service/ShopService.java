@@ -1,5 +1,7 @@
 package com.sparta.deliveryminiproject.domain.shop.service;
 
+import com.sparta.deliveryminiproject.domain.region.entity.Region;
+import com.sparta.deliveryminiproject.domain.region.repository.RegionRepository;
 import com.sparta.deliveryminiproject.domain.shop.dto.ShopRequestDto;
 import com.sparta.deliveryminiproject.domain.shop.dto.ShopResponseDto;
 import com.sparta.deliveryminiproject.domain.shop.entity.Shop;
@@ -25,6 +27,7 @@ public class ShopService {
 
   private final ShopRepository shopRepository;
   private final UserRepository userRepository;
+  private final RegionRepository regionRepository;
 
   public ShopResponseDto createShop(ShopRequestDto shopRequestDto) {
 
@@ -35,7 +38,9 @@ public class ShopService {
     User owner = userRepository.findById(shopRequestDto.getUserId())
         .orElseThrow(() -> new ApiException("해당 사용자가 없습니다.", HttpStatus.NOT_FOUND));
 
-    Shop shop = new Shop(shopRequestDto, owner);
+    Region region = regionRepository.findRegionByIdOrElseThrow(shopRequestDto.getRegionId());
+
+    Shop shop = new Shop(shopRequestDto, owner, region);
 
     shopRepository.save(shop);
 
@@ -78,7 +83,9 @@ public class ShopService {
 
     ShopService.validateShopOwner(user, shop);
 
-    shop.update(shopRequestDto);
+    Region region = regionRepository.findById(shopRequestDto.getRegionId()).orElse(null);
+
+    shop.update(shopRequestDto, region);
 
     return new ShopResponseDto(shop);
   }

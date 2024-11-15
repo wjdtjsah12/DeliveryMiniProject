@@ -26,6 +26,8 @@ public class ShopResponseDto {
 
   private Boolean isHidden;
 
+  private String regionName;
+
   public ShopResponseDto(Shop shop) {
     this.shopName = shop.getShopName();
     this.userId = shop.getUser().getId();
@@ -34,5 +36,6 @@ public class ShopResponseDto {
     this.minDeliveryPrice = shop.getMinDeliveryPrice();
     this.deliveryTip = shop.getDeliveryTip();
     this.isHidden = shop.getIsHidden();
+    this.regionName = shop.getRegion().getRegionName();
   }
 }
