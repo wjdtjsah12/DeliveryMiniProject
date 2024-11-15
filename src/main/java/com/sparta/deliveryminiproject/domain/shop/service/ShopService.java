@@ -44,8 +44,7 @@ public class ShopService {
 
   public ShopResponseDto getShop(UUID shopId) {
 
-    Shop shop = shopRepository.findById(shopId)
-        .orElseThrow(() -> new ApiException("존재하지 않는 가게입니다.", HttpStatus.NOT_FOUND));
+    Shop shop = shopRepository.findShopByIdOrElseThrow(shopId);
 
     if (shop.getIsDeleted() || shop.getIsHidden()) {
       throw new ApiException("삭제되거나 숨겨진 가게입니다.", HttpStatus.NOT_FOUND);
@@ -75,16 +74,9 @@ public class ShopService {
   @Transactional
   public ShopResponseDto updateShop(UUID shopId, ShopRequestDto shopRequestDto, User user) {
 
-    Shop shop = shopRepository.findById(shopId)
-        .orElseThrow(() -> new ApiException("존재하지 않는 가게입니다.", HttpStatus.NOT_FOUND));
+    Shop shop = shopRepository.findShopByIdOrElseThrow(shopId);
 
-    // 가게 소유자만 가게 정보를 수정 할 수 있도록 검증
-    if (!(user.getRole().equals(UserRoleEnum.MANAGER) ||
-        user.getRole().equals(UserRoleEnum.MASTER))) {
-      if (!shop.getUser().getId().equals(user.getId())) {
-        throw new ApiException("가게 주인이 아닙니다.", HttpStatus.BAD_REQUEST);
-      }
-    }
+    ShopService.validateShopOwner(user, shop);
 
     shop.update(shopRequestDto);
 
@@ -94,11 +86,20 @@ public class ShopService {
   @Transactional
   public ShopResponseDto deleteShop(UUID shopId) {
 
-    Shop shop = shopRepository.findById(shopId)
-        .orElseThrow(() -> new ApiException("존재하지 않는 가게입니다.", HttpStatus.NOT_FOUND));
+    Shop shop = shopRepository.findShopByIdOrElseThrow(shopId);
 
     shop.setIsDeleted(true);
 
     return new ShopResponseDto(shop);
+  }
+
+  // 해당 유저가 가게 소유주 이상의 권한을 갖고 있는지 검증
+  public static void validateShopOwner(User user, Shop shop) {
+    if (!(user.getRole().equals(UserRoleEnum.MANAGER) ||
+        user.getRole().equals(UserRoleEnum.MASTER))) {
+      if (!shop.getUser().getId().equals(user.getId())) {
+        throw new ApiException("가게 주인이 아닙니다.", HttpStatus.BAD_REQUEST);
+      }
+    }
   }
 }
