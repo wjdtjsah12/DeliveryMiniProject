@@ -3,6 +3,7 @@ package com.sparta.deliveryminiproject.domain.shopCategory.entity;
 import com.sparta.deliveryminiproject.domain.category.entity.Category;
 import com.sparta.deliveryminiproject.domain.shop.entity.Shop;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -25,11 +26,11 @@ public class ShopCategory {
   @GeneratedValue(strategy = GenerationType.UUID)
   private UUID id;
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "shop_id")
   private Shop shop;
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "category_id")
   private Category category;
 
