@@ -4,6 +4,7 @@ import com.sparta.deliveryminiproject.domain.review.dto.ReviewRequestDto;
 import com.sparta.deliveryminiproject.domain.review.dto.ReviewResponseDto;
 import com.sparta.deliveryminiproject.domain.review.service.ReviewService;
 import com.sparta.deliveryminiproject.global.security.UserDetailsImpl;
+import jakarta.validation.Valid;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -31,7 +32,7 @@ public class ReviewController {
   @PostMapping
   public ResponseEntity createReview(
       @PathVariable UUID shopId,
-      @ModelAttribute ReviewRequestDto reviewRequestDto,
+      @ModelAttribute @Valid ReviewRequestDto reviewRequestDto,
       @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
     ReviewResponseDto reviewResponseDto = reviewService.createReview(shopId, reviewRequestDto,
@@ -68,7 +69,7 @@ public class ReviewController {
   public ResponseEntity updateReview(
       @PathVariable UUID shopId,
       @PathVariable UUID reviewId,
-      @ModelAttribute ReviewRequestDto reviewRequestDto,
+      @ModelAttribute @Valid ReviewRequestDto reviewRequestDto,
       @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
     ReviewResponseDto reviewResponseDto = reviewService.updateReview(shopId, reviewId,
