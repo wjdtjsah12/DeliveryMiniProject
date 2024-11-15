@@ -6,10 +6,8 @@ import com.sparta.deliveryminiproject.domain.category.dto.CategoryResponseDto;
 import com.sparta.deliveryminiproject.domain.category.service.CategoryService;
 import com.sparta.deliveryminiproject.domain.user.entity.UserRoleEnum.Authority;
 import jakarta.validation.Valid;
-import java.util.List;
 import java.util.UUID;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,21 +29,20 @@ public class CategoryController {
   }
 
   // 카테고리 등록
-  @Secured({Authority.OWNER, Authority.MANAGER, Authority.MASTER,})
+  @Secured({Authority.MANAGER, Authority.MASTER,})
   @PostMapping
   public void createCategory(@Valid CategoryRequestDto requestDto) {
     categoryService.createCategory(requestDto);
   }
 
   // 카테고리 수정
-  @Secured({Authority.OWNER, Authority.MANAGER, Authority.MASTER,})
+  @Secured({Authority.MANAGER, Authority.MASTER,})
   @PutMapping("/{id}")
   public void updateCategory(@PathVariable UUID id, @Valid CategoryRequestDto requestDto) {
     categoryService.updateCategory(id, requestDto);
   }
 
   // 카테고리 키워드 검색
-
   @GetMapping
   public Page<CategoryResponseDto> getCategoryByKeywordAndIsDeleted(
       @RequestParam(required = false) String searchQuery,
@@ -66,7 +63,7 @@ public class CategoryController {
   }
 
   // 카테고리 삭제
-  @Secured({Authority.OWNER, Authority.MANAGER, Authority.MASTER,})
+  @Secured({Authority.MANAGER, Authority.MASTER,})
   @DeleteMapping("/{id}")
   public void deleteCategory(@PathVariable UUID id) {
     categoryService.deleteCategory(id);
