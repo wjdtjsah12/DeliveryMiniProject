@@ -1,14 +1,17 @@
 package com.sparta.deliveryminiproject.domain.order.entity;
 
 import com.sparta.deliveryminiproject.domain.cart.entity.Cart;
+import com.sparta.deliveryminiproject.domain.user.entity.User;
 import com.sparta.deliveryminiproject.global.entity.BaseEntity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.util.ArrayList;
@@ -49,9 +52,12 @@ public class Order extends BaseEntity {
   @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
   private List<Cart> cartList = new ArrayList<>();
 
+  @ManyToOne(fetch = FetchType.LAZY)
+  private User user;
+
   @Builder
   private Order(UUID id, int totalPrice, String requests, String address, String phoneNumber,
-      OrderType orderType, OrderStatus orderStatus) {
+      OrderType orderType, OrderStatus orderStatus, User user) {
     this.id = id;
     this.totalPrice = totalPrice;
     this.requests = requests;
@@ -59,6 +65,7 @@ public class Order extends BaseEntity {
     this.phoneNumber = phoneNumber;
     this.orderType = orderType;
     this.orderStatus = orderStatus;
+    this.user = user;
   }
 
   public void addCartList(Cart cart) {

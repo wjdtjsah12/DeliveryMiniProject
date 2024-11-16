@@ -8,14 +8,14 @@ import lombok.Getter;
 @Getter
 public class CartMenuResponseDto {
 
-  private UUID id;
+  private UUID cartId;
   private String menuName;
   private int quantity;
   private int price;
 
   @Builder
-  public CartMenuResponseDto(UUID id, String menuName, int quantity, int price) {
-    this.id = id;
+  public CartMenuResponseDto(UUID cartId, String menuName, int quantity, int price) {
+    this.cartId = cartId;
     this.menuName = menuName;
     this.quantity = quantity;
     this.price = price;
@@ -23,7 +23,7 @@ public class CartMenuResponseDto {
 
   public static CartMenuResponseDto from(Cart cart) {
     return CartMenuResponseDto.builder()
-        .id(cart.getId())
+        .cartId(cart.getId())
         .menuName(cart.getMenu().getMenuName())
         .quantity(cart.getQuantity())
         .price(cart.getMenu().getPrice() * cart.getQuantity())
