@@ -10,7 +10,6 @@ import com.sparta.deliveryminiproject.domain.order.entity.Order;
 import com.sparta.deliveryminiproject.domain.order.entity.OrderStatus;
 import com.sparta.deliveryminiproject.domain.order.entity.OrderType;
 import com.sparta.deliveryminiproject.domain.order.repository.OrderRepository;
-import com.sparta.deliveryminiproject.domain.shop.repository.ShopRepository;
 import com.sparta.deliveryminiproject.domain.user.entity.User;
 import com.sparta.deliveryminiproject.domain.user.entity.UserRoleEnum;
 import com.sparta.deliveryminiproject.global.exception.ApiException;
@@ -31,7 +30,6 @@ public class OrderService {
 
   private final OrderRepository orderRepository;
   private final CartRepository cartRepository;
-  private final ShopRepository shopRepository;
 
   @Transactional
   public Order createOrder(User user, OrderRequestDto orderRequestDto) {
