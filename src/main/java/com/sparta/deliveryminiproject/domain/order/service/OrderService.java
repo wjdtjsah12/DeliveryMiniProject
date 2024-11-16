@@ -14,6 +14,7 @@ import com.sparta.deliveryminiproject.domain.shop.repository.ShopRepository;
 import com.sparta.deliveryminiproject.domain.user.entity.User;
 import com.sparta.deliveryminiproject.domain.user.entity.UserRoleEnum;
 import com.sparta.deliveryminiproject.global.exception.ApiException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -98,8 +99,21 @@ public class OrderService {
     Order order = orderRepository.findById(orderId)
         .orElseThrow(() -> new ApiException("주문 정보를 찾을 수 없습니다.", HttpStatus.NOT_FOUND));
 
-    if (!order.getShop().getUser().getId().equals(user.getId())) {
-      throw new ApiException("해당 주문의 상태를 수정할 권한이 없습니다.", HttpStatus.FORBIDDEN);
+    if (orderStatus.equals(OrderStatus.CANCELED)) {
+      if (!order.getUser().getId().equals(user.getId())) {
+        throw new ApiException("해당 주문의 상태를 수정할 권한이 없습니다.", HttpStatus.FORBIDDEN);
+      }
+
+      LocalDateTime createdAt = order.getCreatedAt();
+      LocalDateTime now = LocalDateTime.now();
+
+      if (createdAt.plusMinutes(5).isBefore(now)) {
+        throw new ApiException("주문 후 5분이 지나 취소할 수 없습니다.", HttpStatus.BAD_REQUEST);
+      }
+    } else {
+      if (!order.getShop().getUser().getId().equals(user.getId())) {
+        throw new ApiException("해당 주문의 상태를 수정할 권한이 없습니다.", HttpStatus.FORBIDDEN);
+      }
     }
 
     order.setOrderStatus(orderStatus);

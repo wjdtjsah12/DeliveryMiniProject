@@ -6,7 +6,6 @@ import com.sparta.deliveryminiproject.domain.order.entity.Order;
 import com.sparta.deliveryminiproject.domain.order.entity.OrderStatus;
 import com.sparta.deliveryminiproject.domain.order.service.OrderService;
 import com.sparta.deliveryminiproject.domain.payment.service.PaymentService;
-import com.sparta.deliveryminiproject.domain.user.entity.UserRoleEnum.Authority;
 import com.sparta.deliveryminiproject.global.security.UserDetailsImpl;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +13,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -61,7 +59,6 @@ public class OrderController {
     return ResponseEntity.ok(orderService.getOrderDetails(userDetails.getUser(), orderId));
   }
 
-  @Secured(Authority.OWNER)
   @PutMapping("/{orderId}")
   public ResponseEntity updateOrderStatus(
       @AuthenticationPrincipal UserDetailsImpl userDetails,
