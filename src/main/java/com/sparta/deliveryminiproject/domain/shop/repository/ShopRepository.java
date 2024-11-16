@@ -4,17 +4,12 @@ import com.sparta.deliveryminiproject.domain.shop.entity.Shop;
 import com.sparta.deliveryminiproject.global.exception.ApiException;
 import java.util.Optional;
 import java.util.UUID;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.http.HttpStatus;
 
-public interface ShopRepository extends JpaRepository<Shop, UUID> {
+public interface ShopRepository extends JpaRepository<Shop, UUID>, ShopRepositoryCustom {
 
   Optional<Shop> findShopByShopName(String shopName);
-
-  Page<Shop> findByShopNameContainingIgnoreCaseAndIsDeletedFalseAndIsHiddenFalse(String searchQuery,
-      Pageable pageable);
 
   default Shop findShopByIdOrElseThrow(UUID id) {
     return findById(id).orElseThrow(

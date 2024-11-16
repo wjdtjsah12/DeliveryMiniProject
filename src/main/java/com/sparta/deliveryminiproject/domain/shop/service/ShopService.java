@@ -18,7 +18,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -75,19 +74,15 @@ public class ShopService {
 
 
   public Page<ShopResponseDto> getShopList(int size, String searchQuery, String sortBy,
-      Direction direction, Pageable pageable) {
-
-    Sort sort = Sort.by(direction, sortBy);
-    pageable = PageRequest.of(pageable.getPageNumber(), size, sort);
+      Direction direction, Integer page) {
 
     // size를 10, 30, 50로 제한
     size = (size == 30 || size == 50) ? size : 10;  // size가 30이나 50이 아니면 10으로 고정
 
-    pageable = PageRequest.of(pageable.getPageNumber(), size, pageable.getSort());
+    Pageable pageable = PageRequest.of(page, size, direction, sortBy);
 
-    // "isDeleted"와 "isHidden"이 false만 조회  ->  추후 queryDSL로 구현 예정
-    Page<Shop> shopPage = shopRepository
-        .findByShopNameContainingIgnoreCaseAndIsDeletedFalseAndIsHiddenFalse(searchQuery, pageable);
+    // "isDeleted"와 "isHidden"이 false만 조회  ->  queryDSL로 구현 완료
+    Page<Shop> shopPage = shopRepository.searchShops(searchQuery, pageable);
 
     return shopPage.map(shop -> {
       Set<String> categoryNameSet = shopCategoryService.getCategoryNameSet(shop.getId());
