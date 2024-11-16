@@ -4,7 +4,6 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sparta.deliveryminiproject.domain.menu.entity.Menu;
 import com.sparta.deliveryminiproject.domain.menu.entity.QMenu;
-import com.sparta.deliveryminiproject.domain.shop.entity.QShop;
 import jakarta.persistence.EntityManager;
 import java.util.List;
 import java.util.UUID;
@@ -26,7 +25,6 @@ public class MenuRepositoryImpl implements MenuRepositoryCustom {
       String searchQuery, Pageable pageable, UUID shopId) {
 
     QMenu menu = QMenu.menu;
-    QShop shop = QShop.shop;
 
     BooleanExpression searchCondition = menu.menuName.containsIgnoreCase(searchQuery)
         .and(menu.isDeleted.isFalse())
@@ -34,7 +32,6 @@ public class MenuRepositoryImpl implements MenuRepositoryCustom {
 
     List<Menu> result = queryFactory
         .selectFrom(menu)
-        .join(menu.shop, shop).fetchJoin()
         .where(searchCondition)
         .where(menu.shop.id.eq(shopId))
         .offset(pageable.getOffset())
