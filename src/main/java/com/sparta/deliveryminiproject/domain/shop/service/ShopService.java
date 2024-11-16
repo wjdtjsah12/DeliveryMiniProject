@@ -6,10 +6,13 @@ import com.sparta.deliveryminiproject.domain.shop.dto.ShopRequestDto;
 import com.sparta.deliveryminiproject.domain.shop.dto.ShopResponseDto;
 import com.sparta.deliveryminiproject.domain.shop.entity.Shop;
 import com.sparta.deliveryminiproject.domain.shop.repository.ShopRepository;
+import com.sparta.deliveryminiproject.domain.shopCategory.entity.ShopCategory;
+import com.sparta.deliveryminiproject.domain.shopCategory.service.ShopCategoryService;
 import com.sparta.deliveryminiproject.domain.user.entity.User;
 import com.sparta.deliveryminiproject.domain.user.entity.UserRoleEnum;
 import com.sparta.deliveryminiproject.domain.user.repository.UserRepository;
 import com.sparta.deliveryminiproject.global.exception.ApiException;
+import java.util.Set;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -28,7 +31,9 @@ public class ShopService {
   private final ShopRepository shopRepository;
   private final UserRepository userRepository;
   private final RegionRepository regionRepository;
+  private final ShopCategoryService shopCategoryService;
 
+  @Transactional
   public ShopResponseDto createShop(ShopRequestDto shopRequestDto) {
 
     if (shopRepository.findShopByShopName(shopRequestDto.getShopName()).isPresent()) {
@@ -44,7 +49,14 @@ public class ShopService {
 
     shopRepository.save(shop);
 
-    return new ShopResponseDto(shop);
+    // @Transactional 전이 (내부 호출 문제x)
+    Set<ShopCategory> shopCategorySet = shopCategoryService.saveShopCategory(shop,
+        shopRequestDto.getCategoryIdSet());
+
+    Set<String> categoryNameSet = shopCategoryService.convertShopCategorySetToCategoryNameSet(
+        shopCategorySet);
+
+    return new ShopResponseDto(shop, categoryNameSet);
   }
 
   public ShopResponseDto getShop(UUID shopId) {
@@ -55,7 +67,10 @@ public class ShopService {
       throw new ApiException("삭제되거나 숨겨진 가게입니다.", HttpStatus.NOT_FOUND);
     }
 
-    return new ShopResponseDto(shop);
+    // 이렇게 쿼리 2번 나가게 되는 것이 연관관계 설정(mappedBy)보다 좋을 것인가...
+    Set<String> categoryNameSet = shopCategoryService.getCategoryNameSet(shopId);
+
+    return new ShopResponseDto(shop, categoryNameSet);
   }
 
 
@@ -71,9 +86,13 @@ public class ShopService {
     pageable = PageRequest.of(pageable.getPageNumber(), size, pageable.getSort());
 
     // "isDeleted"와 "isHidden"이 false만 조회  ->  추후 queryDSL로 구현 예정
-    return shopRepository.findByShopNameContainingIgnoreCaseAndIsDeletedFalseAndIsHiddenFalse(
-            searchQuery, pageable)
-        .map(ShopResponseDto::new);
+    Page<Shop> shopPage = shopRepository
+        .findByShopNameContainingIgnoreCaseAndIsDeletedFalseAndIsHiddenFalse(searchQuery, pageable);
+
+    return shopPage.map(shop -> {
+      Set<String> categoryNameSet = shopCategoryService.getCategoryNameSet(shop.getId());
+      return new ShopResponseDto(shop, categoryNameSet);
+    });
   }
 
   @Transactional
@@ -87,7 +106,9 @@ public class ShopService {
 
     shop.update(shopRequestDto, region);
 
-    return new ShopResponseDto(shop);
+    Set<String> categoryNameSet = shopCategoryService.getCategoryNameSet(shopId);
+
+    return new ShopResponseDto(shop, categoryNameSet);
   }
 
   @Transactional
@@ -97,7 +118,9 @@ public class ShopService {
 
     shop.setIsDeleted(true);
 
-    return new ShopResponseDto(shop);
+    Set<String> categoryNameSet = shopCategoryService.getCategoryNameSet(shopId);
+
+    return new ShopResponseDto(shop, categoryNameSet);
   }
 
   // 해당 유저가 가게 소유주 이상의 권한을 갖고 있는지 검증

@@ -1,6 +1,7 @@
 package com.sparta.deliveryminiproject.domain.shop.dto;
 
 import com.sparta.deliveryminiproject.domain.shop.entity.Shop;
+import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,7 +29,9 @@ public class ShopResponseDto {
 
   private String regionName;
 
-  public ShopResponseDto(Shop shop) {
+  private Set<String> categoryName;
+
+  public ShopResponseDto(Shop shop, Set<String> categoryNameSet) {
     this.shopName = shop.getShopName();
     this.userId = shop.getUser().getId();
     this.address = shop.getAddress();
@@ -37,5 +40,6 @@ public class ShopResponseDto {
     this.deliveryTip = shop.getDeliveryTip();
     this.isHidden = shop.getIsHidden();
     this.regionName = shop.getRegion().getRegionName();
+    this.categoryName = categoryNameSet;
   }
 }

@@ -2,6 +2,7 @@ package com.sparta.deliveryminiproject.domain.shop.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.constraints.Size;
+import java.util.Set;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -31,4 +32,6 @@ public class ShopRequestDto {
   private Boolean isHidden = false;
 
   private UUID regionId;
+
+  private Set<UUID> categoryIdSet;
 }
