@@ -41,10 +41,15 @@ public class ShopRepositoryImpl implements ShopRepositoryCustom {
         .fetch();
 
     // 총 개수 (페이지네이션을 위한 total count)
-    long total = queryFactory
-        .selectFrom(shop)
+    Long total = queryFactory
+        .select(shop.count())
+        .from(shop)
         .where(searchCondition)
-        .fetchCount();
+        .fetchOne();
+
+    if (total == null) {
+      total = 0L;
+    }
 
     // 결과와 total count를 이용해 Page 객체를 생성하여 반환
     return new PageImpl<>(result, pageable, total);
