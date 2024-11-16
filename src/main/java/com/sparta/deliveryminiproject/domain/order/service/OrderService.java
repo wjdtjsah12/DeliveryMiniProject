@@ -118,4 +118,16 @@ public class OrderService {
 
     order.setOrderStatus(orderStatus);
   }
+
+  @Transactional
+  public void deleteOrder(User user, UUID orderId) {
+    Order order = orderRepository.findById(orderId)
+        .orElseThrow(() -> new ApiException("주문 정보를 찾을 수 없습니다.", HttpStatus.NOT_FOUND));
+
+    if (!order.getUser().getId().equals(user.getId())) {
+      throw new ApiException("해당 주문을 삭제할 권한이 없습니다.", HttpStatus.FORBIDDEN);
+    }
+
+    order.setIsDeleted(true);
+  }
 }
