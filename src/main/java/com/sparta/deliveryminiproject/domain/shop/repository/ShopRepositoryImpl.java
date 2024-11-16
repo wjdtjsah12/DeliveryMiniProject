@@ -2,6 +2,7 @@ package com.sparta.deliveryminiproject.domain.shop.repository;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.sparta.deliveryminiproject.domain.region.entity.QRegion;
 import com.sparta.deliveryminiproject.domain.shop.entity.QShop;
 import com.sparta.deliveryminiproject.domain.shop.entity.Shop;
 import jakarta.persistence.EntityManager;
@@ -23,6 +24,7 @@ public class ShopRepositoryImpl implements ShopRepositoryCustom {
       String searchQuery, Pageable pageable) {
 
     QShop shop = QShop.shop;
+    QRegion region = QRegion.region;
 
     // 조건 설정(where절에 해당)
     BooleanExpression searchCondition = shop.shopName.containsIgnoreCase(searchQuery)
@@ -32,6 +34,7 @@ public class ShopRepositoryImpl implements ShopRepositoryCustom {
     // 쿼리 실행
     List<Shop> result = queryFactory
         .selectFrom(shop)
+        .join(shop.region, region).fetchJoin() // fetchJoin 추가 (region과의 N+1 문제 해결)
         .where(searchCondition)
         .offset(pageable.getOffset())  // 조회할 데이터의 시작 위치 지정
         .limit(pageable.getPageSize())  // 한 번에 조회할 데이터의 개수 지정
