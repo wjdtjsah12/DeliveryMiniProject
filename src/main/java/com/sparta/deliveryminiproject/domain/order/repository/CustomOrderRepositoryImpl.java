@@ -46,13 +46,13 @@ public class CustomOrderRepositoryImpl implements CustomOrderRepository {
         ))
         .from(order)
         .join(order.cartList, cart)
-        .join(cart.shop, shop);
+        .join(order.shop, shop);
 
     JPAQuery<Long> countQuery = queryFactory
         .select(order.countDistinct())
         .from(order)
         .join(order.cartList, cart)
-        .join(cart.shop, shop);
+        .join(order.shop, shop);
 
     if (searchQuery != null) {
       query.join(cart.menu, menu);

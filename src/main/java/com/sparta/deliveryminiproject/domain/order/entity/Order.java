@@ -2,6 +2,7 @@ package com.sparta.deliveryminiproject.domain.order.entity;
 
 import com.sparta.deliveryminiproject.domain.cart.entity.Cart;
 import com.sparta.deliveryminiproject.domain.payment.entity.Payment;
+import com.sparta.deliveryminiproject.domain.shop.entity.Shop;
 import com.sparta.deliveryminiproject.domain.user.entity.User;
 import com.sparta.deliveryminiproject.global.entity.BaseEntity;
 import jakarta.persistence.CascadeType;
@@ -62,6 +63,11 @@ public class Order extends BaseEntity {
   @JoinColumn(name = "payment_id")
   @Setter
   private Payment payment;
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "shop_id")
+  @Setter
+  private Shop shop;
 
   @Builder
   private Order(UUID id, int totalPrice, String requests, String address, String phoneNumber,

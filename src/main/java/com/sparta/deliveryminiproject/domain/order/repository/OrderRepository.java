@@ -9,6 +9,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface OrderRepository extends JpaRepository<Order, UUID>, CustomOrderRepository {
 
-  @EntityGraph(attributePaths = {"cartList", "cartList.shop", "cartList.menu", "payment"})
+  @EntityGraph(attributePaths = {"cartList", "shop", "cartList.menu", "payment"})
   Optional<Order> findByIdAndUserAndIsDeletedFalse(UUID orderId, User user);
 }

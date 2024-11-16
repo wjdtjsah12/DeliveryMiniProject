@@ -7,9 +7,10 @@ import com.sparta.deliveryminiproject.domain.order.dto.OrderRequestDto;
 import com.sparta.deliveryminiproject.domain.order.dto.OrderResponseDto;
 import com.sparta.deliveryminiproject.domain.order.dto.OrderSearchCondition;
 import com.sparta.deliveryminiproject.domain.order.entity.Order;
+import com.sparta.deliveryminiproject.domain.order.entity.OrderStatus;
 import com.sparta.deliveryminiproject.domain.order.entity.OrderType;
 import com.sparta.deliveryminiproject.domain.order.repository.OrderRepository;
-import com.sparta.deliveryminiproject.domain.shop.entity.Shop;
+import com.sparta.deliveryminiproject.domain.shop.repository.ShopRepository;
 import com.sparta.deliveryminiproject.domain.user.entity.User;
 import com.sparta.deliveryminiproject.domain.user.entity.UserRoleEnum;
 import com.sparta.deliveryminiproject.global.exception.ApiException;
@@ -29,6 +30,7 @@ public class OrderService {
 
   private final OrderRepository orderRepository;
   private final CartRepository cartRepository;
+  private final ShopRepository shopRepository;
 
   @Transactional
   public Order createOrder(User user, OrderRequestDto orderRequestDto) {
@@ -39,6 +41,8 @@ public class OrderService {
           order.addCartList(cart);
           cart.setIsDeleted(true);
         });
+
+    order.setShop(order.getCartList().get(0).getShop());
 
     order.setOrderType(
         user.getRole().equals(UserRoleEnum.OWNER) ? OrderType.STORE_ORDER
@@ -67,9 +71,7 @@ public class OrderService {
 
   public OrderDetailsResponseDto getOrderDetails(User user, UUID orderId) {
     Order order = orderRepository.findByIdAndUserAndIsDeletedFalse(orderId, user)
-        .orElseThrow(() -> new ApiException("주문 정보를 찾을 수 없습니다.", HttpStatus.BAD_REQUEST));
-
-    Shop shop = order.getCartList().get(0).getShop();
+        .orElseThrow(() -> new ApiException("주문 정보를 찾을 수 없습니다.", HttpStatus.NOT_FOUND));
 
     List<MenuInfo> menuList = order.getCartList().stream()
         .map(MenuInfo::from)
@@ -80,14 +82,26 @@ public class OrderService {
         .sum();
 
     return OrderDetailsResponseDto.builder()
-        .shopName(shop.getShopName())
+        .shopName(order.getShop().getShopName())
         .orderStatus(order.getOrderStatus())
         .orderType(order.getOrderType())
         .menuList(menuList)
         .menuPrice(menuPrice)
-        .deliveryTip(shop.getDeliveryTip())
+        .deliveryTip(order.getShop().getDeliveryTip())
         .totalPrice(order.getTotalPrice())
         .paymentMethod(order.getPayment().getPaymentMethod())
         .build();
+  }
+
+  @Transactional
+  public void updateOrderStatus(User user, UUID orderId, OrderStatus orderStatus) {
+    Order order = orderRepository.findById(orderId)
+        .orElseThrow(() -> new ApiException("주문 정보를 찾을 수 없습니다.", HttpStatus.NOT_FOUND));
+
+    if (!order.getShop().getUser().getId().equals(user.getId())) {
+      throw new ApiException("해당 주문의 상태를 수정할 권한이 없습니다.", HttpStatus.FORBIDDEN);
+    }
+
+    order.setOrderStatus(orderStatus);
   }
 }
