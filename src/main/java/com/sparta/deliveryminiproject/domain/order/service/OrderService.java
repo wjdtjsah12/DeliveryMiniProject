@@ -1,15 +1,20 @@
 package com.sparta.deliveryminiproject.domain.order.service;
 
 import com.sparta.deliveryminiproject.domain.cart.repository.CartRepository;
+import com.sparta.deliveryminiproject.domain.order.dto.MenuInfo;
+import com.sparta.deliveryminiproject.domain.order.dto.OrderDetailsResponseDto;
 import com.sparta.deliveryminiproject.domain.order.dto.OrderRequestDto;
 import com.sparta.deliveryminiproject.domain.order.dto.OrderResponseDto;
 import com.sparta.deliveryminiproject.domain.order.dto.OrderSearchCondition;
 import com.sparta.deliveryminiproject.domain.order.entity.Order;
 import com.sparta.deliveryminiproject.domain.order.entity.OrderType;
 import com.sparta.deliveryminiproject.domain.order.repository.OrderRepository;
+import com.sparta.deliveryminiproject.domain.shop.entity.Shop;
 import com.sparta.deliveryminiproject.domain.user.entity.User;
 import com.sparta.deliveryminiproject.domain.user.entity.UserRoleEnum;
 import com.sparta.deliveryminiproject.global.exception.ApiException;
+import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -36,7 +41,8 @@ public class OrderService {
         });
 
     order.setOrderType(
-        user.getRole().equals(UserRoleEnum.OWNER) ? OrderType.OFFLINE : OrderType.ONLINE);
+        user.getRole().equals(UserRoleEnum.OWNER) ? OrderType.STORE_ORDER
+            : OrderType.DELIVERY_ORDER);
 
     order.calculateAndSetTotalPrice();
 
@@ -57,5 +63,31 @@ public class OrderService {
       case 10, 30, 50 -> true;
       default -> false;
     };
+  }
+
+  public OrderDetailsResponseDto getOrderDetails(User user, UUID orderId) {
+    Order order = orderRepository.findByIdAndUserAndIsDeletedFalse(orderId, user)
+        .orElseThrow(() -> new ApiException("주문 정보를 찾을 수 없습니다.", HttpStatus.BAD_REQUEST));
+
+    Shop shop = order.getCartList().get(0).getShop();
+
+    List<MenuInfo> menuList = order.getCartList().stream()
+        .map(MenuInfo::from)
+        .toList();
+
+    int menuPrice = menuList.stream()
+        .mapToInt(MenuInfo::getPrice)
+        .sum();
+
+    return OrderDetailsResponseDto.builder()
+        .shopName(shop.getShopName())
+        .orderStatus(order.getOrderStatus())
+        .orderType(order.getOrderType())
+        .menuList(menuList)
+        .menuPrice(menuPrice)
+        .deliveryTip(shop.getDeliveryTip())
+        .totalPrice(order.getTotalPrice())
+        .paymentMethod(order.getPayment().getPaymentMethod())
+        .build();
   }
 }

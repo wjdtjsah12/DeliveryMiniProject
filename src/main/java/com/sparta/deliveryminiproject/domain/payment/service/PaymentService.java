@@ -20,9 +20,9 @@ public class PaymentService {
     Payment payment = Payment.builder()
         .paymentMethod("카드 결제")
         .totalPrice(order.getTotalPrice())
-        .order(order)
         .build();
 
+    order.setPayment(payment);
     order.setOrderStatus(OrderStatus.PAID);
 
     paymentRepository.save(payment);

@@ -5,8 +5,8 @@ import lombok.Getter;
 
 @Getter
 public enum OrderType {
-  ONLINE("비대면 주문"),
-  OFFLINE("대면 주문");
+  DELIVERY_ORDER("배달 주문"),
+  STORE_ORDER("가게 주문");
 
   @JsonValue
   private final String description;
