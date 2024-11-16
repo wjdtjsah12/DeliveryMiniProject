@@ -82,7 +82,7 @@ public class ShopService {
     Pageable pageable = PageRequest.of(page, size, direction, sortBy);
 
     // "isDeleted"와 "isHidden"이 false만 조회  ->  queryDSL로 구현 완료
-    Page<Shop> shopPage = shopRepository.searchShops(searchQuery, pageable);
+    Page<Shop> shopPage = shopRepository.searchShopsByKeyword(searchQuery, pageable);
 
     return shopPage.map(shop -> {
       Set<String> categoryNameSet = shopCategoryService.getCategoryNameSet(shop.getId());
@@ -117,6 +117,23 @@ public class ShopService {
 
     return new ShopResponseDto(shop, categoryNameSet);
   }
+
+  public Page<ShopResponseDto> getShopListByRegion(UUID regionId, int size, String sortBy,
+      Direction direction, Integer page) {
+
+    // size를 10, 30, 50로 제한
+    size = (size == 30 || size == 50) ? size : 10;  // size가 30이나 50이 아니면 10으로 고정
+
+    Pageable pageable = PageRequest.of(page, size, direction, sortBy);
+
+    Page<Shop> shopPage = shopRepository.findShopsByRegionId(regionId, pageable);
+
+    return shopPage.map(shop -> {
+      Set<String> categoryNameSet = shopCategoryService.getCategoryNameSet(shop.getId());
+      return new ShopResponseDto(shop, categoryNameSet);
+    });
+  }
+
 
   // 해당 유저가 가게 소유주 이상의 권한을 갖고 있는지 검증
   public static void validateShopOwner(User user, Shop shop) {

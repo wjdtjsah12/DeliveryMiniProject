@@ -86,5 +86,19 @@ public class ShopController {
     return ResponseEntity.ok(shopResponseDto);
   }
 
+  @GetMapping("/regions/{regionId}")
+  public ResponseEntity<Page<ShopResponseDto>> getShopListByRegion(
+      @PathVariable UUID regionId,
+      @RequestParam(defaultValue = "10") int size,
+      @RequestParam(defaultValue = "createdAt") String sortBy,
+      @RequestParam(defaultValue = "DESC") Direction direction,
+      @RequestParam(defaultValue = "1") Integer page) {
+
+    Page<ShopResponseDto> PagedShopResponseDto = shopService.getShopListByRegion(
+        regionId, size, sortBy, direction, page - 1);
+
+    return ResponseEntity.ok(PagedShopResponseDto);
+  }
+
 
 }

@@ -6,6 +6,7 @@ import com.sparta.deliveryminiproject.domain.shop.entity.QShop;
 import com.sparta.deliveryminiproject.domain.shop.entity.Shop;
 import jakarta.persistence.EntityManager;
 import java.util.List;
+import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -19,7 +20,7 @@ public class ShopRepositoryImpl implements ShopRepositoryCustom {
   }
 
   @Override
-  public Page<Shop> searchShops(
+  public Page<Shop> searchShopsByKeyword(
       String searchQuery, Pageable pageable) {
 
     QShop shop = QShop.shop;
@@ -51,5 +52,33 @@ public class ShopRepositoryImpl implements ShopRepositoryCustom {
     // 결과와 total count를 이용해 Page 객체를 생성하여 반환
     return new PageImpl<>(result, pageable, total);
 
+  }
+
+  @Override
+  public Page<Shop> findShopsByRegionId(UUID regionId, Pageable pageable) {
+
+    QShop shop = QShop.shop;
+
+    BooleanExpression searchCondition = shop.region.id.eq(regionId).and(shop.isDeleted.isFalse())
+        .and(shop.isHidden.isFalse());
+
+    List<Shop> result = queryFactory
+        .selectFrom(shop)
+        .where(searchCondition)
+        .offset(pageable.getOffset())
+        .limit(pageable.getPageSize())
+        .fetch();
+
+    Long total = queryFactory
+        .select(shop.count())
+        .from(shop)
+        .where(searchCondition)
+        .fetchOne();
+
+    if (total == null) {
+      total = 0L;
+    }
+
+    return new PageImpl<>(result, pageable, total);
   }
 }
