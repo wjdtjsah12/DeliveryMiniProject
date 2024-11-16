@@ -97,20 +97,17 @@ public class OrderService {
     Order order = orderRepository.findById(orderId)
         .orElseThrow(() -> new ApiException("주문 정보를 찾을 수 없습니다.", HttpStatus.NOT_FOUND));
 
-    if (orderStatus.equals(OrderStatus.CANCELED)) {
-      if (!order.getUser().getId().equals(user.getId())) {
-        throw new ApiException("해당 주문의 상태를 수정할 권한이 없습니다.", HttpStatus.FORBIDDEN);
-      }
+    if (user.getRole().equals(UserRoleEnum.CUSTOMER)) {
+      if (orderStatus.equals(OrderStatus.CANCELED)) {
+        if (!order.getUser().getId().equals(user.getId())) {
+          throw new ApiException("해당 주문의 상태를 수정할 권한이 없습니다.", HttpStatus.FORBIDDEN);
+        }
 
-      LocalDateTime createdAt = order.getCreatedAt();
-      LocalDateTime now = LocalDateTime.now();
-
-      if (createdAt.plusMinutes(5).isBefore(now)) {
-        throw new ApiException("주문 후 5분이 지나 취소할 수 없습니다.", HttpStatus.BAD_REQUEST);
-      }
-    } else {
-      if (!order.getShop().getUser().getId().equals(user.getId())) {
-        throw new ApiException("해당 주문의 상태를 수정할 권한이 없습니다.", HttpStatus.FORBIDDEN);
+        validateOrderCancellationTime(order);
+      } else {
+        if (!order.getShop().getUser().getId().equals(user.getId())) {
+          throw new ApiException("해당 주문의 상태를 수정할 권한이 없습니다.", HttpStatus.FORBIDDEN);
+        }
       }
     }
 
@@ -127,5 +124,15 @@ public class OrderService {
     }
 
     order.setIsDeleted(true);
+  }
+
+  // 주문 취소 가능 시간 검증 (5분 이내인지 확인)
+  private void validateOrderCancellationTime(Order order) {
+    LocalDateTime createdAt = order.getCreatedAt();
+    LocalDateTime now = LocalDateTime.now();
+
+    if (createdAt.plusMinutes(5).isBefore(now)) {
+      throw new ApiException("주문 후 5분이 지나 취소할 수 없습니다.", HttpStatus.BAD_REQUEST);
+    }
   }
 }
