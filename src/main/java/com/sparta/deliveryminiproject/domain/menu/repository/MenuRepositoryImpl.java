@@ -41,11 +41,16 @@ public class MenuRepositoryImpl implements MenuRepositoryCustom {
         .limit(pageable.getPageSize())
         .fetch();
 
-    long total = queryFactory
-        .selectFrom(menu)
+    Long total = queryFactory
+        .select(menu.count())
+        .from(menu)
         .where(searchCondition)
         .where(menu.shop.id.eq(shopId))
-        .fetchCount();
+        .fetchOne();
+
+    if (total == null) {
+      total = 0L;
+    }
 
     return new PageImpl<>(result, pageable, total);
 
