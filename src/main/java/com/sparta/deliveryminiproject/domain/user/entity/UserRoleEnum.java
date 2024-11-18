@@ -17,7 +17,8 @@ public enum UserRoleEnum {
 
   public static UserRoleEnum contains(String role) {
     for (UserRoleEnum userRole : UserRoleEnum.values()) {
-      if (userRole.getAuthority().equals(role)) {
+      String roleValue = "ROLE_" + role.toUpperCase();
+      if (userRole.getAuthority().equals(roleValue)) {
         return userRole;
       }
     }

@@ -1,5 +1,7 @@
 package com.sparta.deliveryminiproject.global.security;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sparta.deliveryminiproject.global.exception.ApiException;
 import com.sparta.deliveryminiproject.global.jwt.JwtUtil;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
@@ -7,6 +9,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -28,6 +31,12 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
   protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res,
       FilterChain filterChain) throws ServletException, IOException {
 
+    String path = req.getRequestURI();
+    if (path.equals("/api/users/signup") || path.equals("/api/users/signin")) {
+      filterChain.doFilter(req, res);
+      return;
+    }
+
     String tokenValue = jwtUtil.getTokenFromRequest(req);
 
     if (StringUtils.hasText(tokenValue)) {
@@ -45,6 +54,13 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         System.out.println(e.getMessage());
         return;
       }
+    } else {
+      res.setStatus(HttpStatus.FORBIDDEN.value());
+      res.setContentType("application/json");
+      res.getWriter().write(new ObjectMapper().writeValueAsString(
+          new ApiException("Token Null", HttpStatus.FORBIDDEN)
+      ));
+      return;
     }
 
     filterChain.doFilter(req, res);
