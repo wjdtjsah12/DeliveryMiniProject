@@ -28,7 +28,6 @@ public class GeminiResponseDto {
 
   }
 
-  @Getter
   public static class Parts {
 
     private String text;
@@ -36,10 +35,14 @@ public class GeminiResponseDto {
 
     public void setText(String text) {
       this.text = text;
-      List<String> speratedText = new ArrayList<>(
+      List<String> seperatedText = new ArrayList<>(
           Arrays.stream(text.replace("**", "").split("\\n")).toList());
-      speratedText.removeAll(Arrays.asList("", null));
-      this.seperatedText = speratedText;
+      seperatedText.removeAll(Arrays.asList("", null));
+      this.seperatedText = seperatedText;
     }
+  }
+
+  public List<String> getSeperatedTexts() {
+    return this.candidates.get(0).getContent().parts.get(0).seperatedText;
   }
 }
