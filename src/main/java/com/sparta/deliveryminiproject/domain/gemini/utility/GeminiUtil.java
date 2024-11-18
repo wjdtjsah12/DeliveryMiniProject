@@ -6,8 +6,8 @@ import com.sparta.deliveryminiproject.domain.gemini.dto.GeminiRequestDto;
 import com.sparta.deliveryminiproject.domain.gemini.dto.GeminiResponseDto;
 import com.sparta.deliveryminiproject.domain.gemini.repository.GeminiRepository;
 import com.sparta.deliveryminiproject.domain.menu.entity.Menu;
-import com.sparta.deliveryminiproject.domain.menu.repository.MenuRepository;
 import com.sparta.deliveryminiproject.global.exception.ApiException;
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,14 +22,11 @@ public class GeminiUtil {
 
   private final RestTemplate restTemplate;
   private final GeminiRepository geminiRepository;
-  private final MenuRepository menuRepository;
 
   public GeminiUtil(@Qualifier("geminiRestTemplate") RestTemplate restTemplate,
-      GeminiRepository geminiRepository,
-      MenuRepository menuRepository) {
+      GeminiRepository geminiRepository) {
     this.restTemplate = restTemplate;
     this.geminiRepository = geminiRepository;
-    this.menuRepository = menuRepository;
   }
 
   @Value("${gemini.api.url}")
@@ -42,7 +39,7 @@ public class GeminiUtil {
   public List<Gemini> getGeminiResponses(Menu menu) {
     List<Gemini> geminiList = checkGeminiReponseExist(menu);
     // DB 내부 API Response 찾기
-    if (geminiList != null) {
+    if (!geminiList.isEmpty()) {
       // DB 내부 Data 있으면 사용
       return geminiList;
     } else {
@@ -53,11 +50,12 @@ public class GeminiUtil {
             requestUrl,
             new GeminiRequestDto(menu),
             GeminiResponseDto.class);
+
         if (responseDto != null) {
-          if (responseDto.getSeperatedTexts() != null) {
-            List<String> sepratedTexts = responseDto.getSeperatedTexts();
-            for (String sepratedText : sepratedTexts) {
-              Gemini gemini = new Gemini(menu, sepratedText);
+          List<String> seperatedTexts = responseDto.getSeperatedTexts();
+          if (seperatedTexts != null) {
+            for (String seperatedText : seperatedTexts) {
+              Gemini gemini = new Gemini(menu, seperatedText);
               geminiList.add(gemini);
               geminiRepository.save(gemini);
             }
@@ -81,6 +79,6 @@ public class GeminiUtil {
       return geminiList;
     }
 
-    return null;
+    return new ArrayList<>();
   }
 }
