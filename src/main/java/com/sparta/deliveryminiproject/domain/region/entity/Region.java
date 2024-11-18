@@ -1,6 +1,5 @@
 package com.sparta.deliveryminiproject.domain.region.entity;
 
-import com.fasterxml.jackson.databind.ser.Serializers.Base;
 import com.sparta.deliveryminiproject.domain.region.dto.RegionRequestDto;
 import com.sparta.deliveryminiproject.global.entity.BaseEntity;
 import jakarta.persistence.Column;
@@ -28,6 +27,6 @@ public class Region extends BaseEntity {
   private String regionName;
 
   public Region(RegionRequestDto requestDto) {
-    this.regionName = regionName;
+    this.regionName = requestDto.getRegionName();
   }
 }
