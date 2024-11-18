@@ -79,6 +79,6 @@ public class RegionService {
 
   private Region checkRegionExist(UUID id) {
     return regionRepository.findById(id).orElseThrow(() ->
-        new ApiException("해당하는 카테고리가 존재하지 않습니다.", HttpStatus.BAD_REQUEST));
+        new ApiException("해당하는 지역이 존재하지 않습니다.", HttpStatus.BAD_REQUEST));
   }
 }
