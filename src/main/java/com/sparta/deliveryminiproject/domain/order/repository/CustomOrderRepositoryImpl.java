@@ -18,6 +18,7 @@ import com.sparta.deliveryminiproject.domain.order.entity.OrderStatus;
 import com.sparta.deliveryminiproject.domain.order.entity.OrderType;
 import com.sparta.deliveryminiproject.domain.order.entity.QOrder;
 import com.sparta.deliveryminiproject.domain.user.entity.User;
+import com.sparta.deliveryminiproject.global.sort.DynamicSortUtil;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -84,8 +85,11 @@ public class CustomOrderRepositoryImpl implements CustomOrderRepository {
       );
     }
 
-    List<OrderResponseDto> content = query.
-        orderBy(getOrderSpecifier(pageable.getSort()).stream().toArray(OrderSpecifier[]::new))
+    List<OrderResponseDto> content = query
+        .orderBy(
+            DynamicSortUtil.getDynamicSort(
+                    pageable.getSort(), order.getType(), order.getMetadata())
+                .toArray(OrderSpecifier[]::new))
         .offset(pageable.getOffset())
         .limit(pageable.getPageSize())
         .fetch();
