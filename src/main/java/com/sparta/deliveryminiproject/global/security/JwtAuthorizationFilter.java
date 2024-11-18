@@ -1,13 +1,12 @@
 package com.sparta.deliveryminiproject.global.security;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sparta.deliveryminiproject.global.exception.ApiException;
 import com.sparta.deliveryminiproject.global.jwt.JwtUtil;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -17,8 +16,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
-
-import java.io.IOException;
 
 @RequiredArgsConstructor
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
@@ -42,7 +39,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     if (StringUtils.hasText(tokenValue)) {
       tokenValue = jwtUtil.substringToken(tokenValue);
 
-      if (!jwtUtil.validateToken(tokenValue)) {
+      if (!jwtUtil.validateToken(tokenValue, res)) {
         return;
       }
 
@@ -55,15 +52,23 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         return;
       }
     } else {
-      res.setStatus(HttpStatus.FORBIDDEN.value());
-      res.setContentType("application/json");
-      res.getWriter().write(new ObjectMapper().writeValueAsString(
-          new ApiException("Token Null", HttpStatus.FORBIDDEN)
-      ));
+      sendErrorResponse(res, "Token is missing", HttpStatus.FORBIDDEN);
       return;
     }
 
     filterChain.doFilter(req, res);
+  }
+
+  public static void sendErrorResponse(HttpServletResponse res, String message, HttpStatus status)
+      throws IOException {
+    res.setStatus(status.value());
+    res.setContentType("application/json");
+    res.setCharacterEncoding("UTF-8");
+    res.getWriter().write(String.format(
+        "{\"message\": \"%s\", \"status\": %d}",
+        message,
+        status.value()
+    ));
   }
 
   public void setAuthentication(String username) {

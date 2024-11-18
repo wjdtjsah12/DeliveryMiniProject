@@ -1,5 +1,7 @@
 package com.sparta.deliveryminiproject.global.jwt;
 
+import static com.sparta.deliveryminiproject.global.security.JwtAuthorizationFilter.sendErrorResponse;
+
 import com.sparta.deliveryminiproject.domain.user.entity.UserRoleEnum;
 import com.sparta.deliveryminiproject.global.exception.ApiException;
 import com.sparta.deliveryminiproject.global.security.RedisUtil;
@@ -15,6 +17,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -98,7 +101,7 @@ public class JwtUtil {
     throw new ApiException("Not Found Token", HttpStatus.BAD_REQUEST);
   }
 
-  public boolean validateToken(String token) {
+  public boolean validateToken(String token, HttpServletResponse response) throws IOException {
     if (redisUtil.isTokenBlacklisted(token)) {
       throw new ApiException("Signed out User", HttpStatus.FORBIDDEN);
     }
@@ -106,14 +109,17 @@ public class JwtUtil {
       Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
       return true;
     } catch (SecurityException | MalformedJwtException | SignatureException e) {
-      throw new ApiException("Invalid JWT signature, 유효하지 않는 JWT 서명 입니다.", HttpStatus.FORBIDDEN);
+      sendErrorResponse(response, "Invalid JWT signature, 유효하지 않는 JWT 서명 입니다.",
+          HttpStatus.FORBIDDEN);
     } catch (ExpiredJwtException e) {
-      throw new ApiException("Expired JWT token, 만료된 JWT token 입니다.", HttpStatus.FORBIDDEN);
+      sendErrorResponse(response, "Expired JWT token, 만료된 JWT token 입니다.", HttpStatus.FORBIDDEN);
     } catch (UnsupportedJwtException e) {
-      throw new ApiException("Unsupported JWT token, 지원되지 않는 JWT 토큰 입니다.", HttpStatus.FORBIDDEN);
+      sendErrorResponse(response, "Unsupported JWT token, 지원되지 않는 JWT 토큰 입니다.",
+          HttpStatus.FORBIDDEN);
     } catch (IllegalArgumentException e) {
-      throw new ApiException("JWT claims is empty, 잘못된 JWT 토큰 입니다.", HttpStatus.FORBIDDEN);
+      sendErrorResponse(response, "JWT claims is empty, 잘못된 JWT 토큰 입니다.", HttpStatus.FORBIDDEN);
     }
+    return false;
   }
 
   public Claims getUserInfoFromToken(String token) {
