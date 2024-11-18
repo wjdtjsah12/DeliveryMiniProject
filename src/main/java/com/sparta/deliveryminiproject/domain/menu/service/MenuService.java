@@ -75,7 +75,7 @@ public class MenuService {
     ShopService.validateShopOwner(user, shop);
 
     if (descriptionNumber != null) {
-      menu.setDescription(geminiUtil.getGeminiResponses(menu).get(descriptionNumber).getGeminiDescription());
+      menu.setDescription(geminiUtil.getGeminiResponses(menu).get(descriptionNumber-1).getGeminiDescription());
     }
 
     menu.update(menuRequestDto);
