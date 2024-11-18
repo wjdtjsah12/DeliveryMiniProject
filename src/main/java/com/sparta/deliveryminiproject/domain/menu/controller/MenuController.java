@@ -75,9 +75,11 @@ public class MenuController {
       @ModelAttribute MenuRequestDto menuRequestDto,
       @PathVariable UUID shopId,
       @PathVariable UUID menuId,
+      @RequestParam(required = false) Integer descriptionNumber,
       @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
     MenuResponseDto menuResponseDto = menuService.updateMenu(menuRequestDto, shopId, menuId,
+        descriptionNumber,
         userDetails.getUser());
 
     return ResponseEntity.ok(menuResponseDto);

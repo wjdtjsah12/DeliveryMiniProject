@@ -1,5 +1,6 @@
 package com.sparta.deliveryminiproject.domain.menu.service;
 
+import com.sparta.deliveryminiproject.domain.gemini.utility.GeminiUtil;
 import com.sparta.deliveryminiproject.domain.menu.dto.MenuRequestDto;
 import com.sparta.deliveryminiproject.domain.menu.dto.MenuResponseDto;
 import com.sparta.deliveryminiproject.domain.menu.entity.Menu;
@@ -24,6 +25,7 @@ public class MenuService {
 
   private final MenuRepository menuRepository;
   private final ShopRepository shopRepository;
+  private final GeminiUtil geminiUtil;
 
   public MenuResponseDto createMenu(MenuRequestDto menuRequestDto, UUID shopId, User user) {
 
@@ -70,13 +72,17 @@ public class MenuService {
 
   @Transactional
   public MenuResponseDto updateMenu(MenuRequestDto menuRequestDto, UUID shopId, UUID menuId,
-      User user) {
+      Integer descriptionNumber, User user) {
 
     Shop shop = shopRepository.findShopByIdOrElseThrow(shopId);
 
     Menu menu = menuRepository.findMenuByIdOrElseThrow(menuId);
 
     ShopService.validateShopOwner(user, shop);
+
+    if (descriptionNumber != null) {
+      menu.setDescription(geminiUtil.getGeminiResponses(menu).get(descriptionNumber).getGeminiDescription());
+    }
 
     menu.update(menuRequestDto);
 
