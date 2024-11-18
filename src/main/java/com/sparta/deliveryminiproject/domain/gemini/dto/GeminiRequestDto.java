@@ -1,5 +1,6 @@
 package com.sparta.deliveryminiproject.domain.gemini.dto;
 
+import com.sparta.deliveryminiproject.domain.menu.entity.Menu;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -32,9 +33,10 @@ public class GeminiRequestDto {
     }
   }
 
-  public GeminiRequestDto(String menu) {
+  public GeminiRequestDto(Menu menu) {
     this.contents = new ArrayList<>();
-    Content content = new Content(menu + "에 대한 대해 각각 다른 3가지 설명을 해줘. 설명 별로 간결하게 50자 내외로 작성해줘");
+    Content content = new Content(
+        menu.getMenuName() + "에 대한 대해 각각 다른 3가지 설명을 해줘. 설명 별로 간결하게 50자 내외로 작성해줘");
     contents.add(content);
   }
 }

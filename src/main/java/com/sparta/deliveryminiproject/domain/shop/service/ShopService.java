@@ -42,8 +42,7 @@ public class ShopService {
     User owner = userRepository.findById(shopRequestDto.getUserId())
         .orElseThrow(() -> new ApiException("해당 사용자가 없습니다.", HttpStatus.NOT_FOUND));
 
-    Region region = regionRepository.findById(shopRequestDto.getRegionId())
-        .orElseThrow(() -> new ApiException("해당 지역이 존재하지 않습니다.", HttpStatus.NOT_FOUND));
+    Region region = regionRepository.findRegionByIdOrElseThrow(shopRequestDto.getRegionId());
 
     Shop shop = new Shop(shopRequestDto, owner, region);
 

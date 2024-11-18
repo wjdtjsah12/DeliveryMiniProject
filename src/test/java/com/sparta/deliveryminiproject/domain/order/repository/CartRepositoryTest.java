@@ -1,39 +1,39 @@
-//package com.sparta.deliveryminiproject.domain.order.repository;
-//
-//import static org.assertj.core.api.Assertions.assertThat;
-//
-//import com.sparta.deliveryminiproject.domain.cart.entity.Cart;
-//import com.sparta.deliveryminiproject.domain.cart.repository.CartRepository;
-//import com.sparta.deliveryminiproject.domain.menu.entity.Menu;
-//import com.sparta.deliveryminiproject.domain.menu.repository.MenuRepository;
-//import com.sparta.deliveryminiproject.domain.shop.entity.Shop;
-//import com.sparta.deliveryminiproject.domain.shop.repository.ShopRepository;
-//import com.sparta.deliveryminiproject.domain.user.entity.User;
-//import com.sparta.deliveryminiproject.domain.user.entity.UserRoleEnum;
-//import com.sparta.deliveryminiproject.domain.user.repository.UserRepository;
-//import java.util.List;
-//import org.junit.jupiter.api.DisplayName;
-//import org.junit.jupiter.api.Test;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.boot.test.context.SpringBootTest;
-//import org.springframework.transaction.annotation.Transactional;
-//
-//@SpringBootTest
-//@Transactional
-//class CartRepositoryTest {
-//
-//  @Autowired
-//  private CartRepository cartRepository;
-//
-//  @Autowired
-//  private UserRepository userRepository;
-//
-//  @Autowired
-//  private MenuRepository menuRepository;
-//
-//  @Autowired
-//  private ShopRepository shopRepository;
-//
+package com.sparta.deliveryminiproject.domain.order.repository;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+import com.sparta.deliveryminiproject.domain.cart.entity.Cart;
+import com.sparta.deliveryminiproject.domain.cart.repository.CartRepository;
+import com.sparta.deliveryminiproject.domain.menu.entity.Menu;
+import com.sparta.deliveryminiproject.domain.menu.repository.MenuRepository;
+import com.sparta.deliveryminiproject.domain.shop.entity.Shop;
+import com.sparta.deliveryminiproject.domain.shop.repository.ShopRepository;
+import com.sparta.deliveryminiproject.domain.user.entity.User;
+import com.sparta.deliveryminiproject.domain.user.entity.UserRoleEnum;
+import com.sparta.deliveryminiproject.domain.user.repository.UserRepository;
+import java.util.List;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
+
+@SpringBootTest
+@Transactional
+class CartRepositoryTest {
+
+  @Autowired
+  private CartRepository cartRepository;
+
+  @Autowired
+  private UserRepository userRepository;
+
+  @Autowired
+  private MenuRepository menuRepository;
+
+  @Autowired
+  private ShopRepository shopRepository;
+
 //  @DisplayName("유저의 카트를 조회했을 때 삭제되지 않은 카트에 제품들을 가져올 수 있다.")
 //  @Test
 //  void findCart() {
@@ -90,4 +90,4 @@
 //    // then
 //    assertThat(result).hasSize(2);
 //  }
-//}
+}

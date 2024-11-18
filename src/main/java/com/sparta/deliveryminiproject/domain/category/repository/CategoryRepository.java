@@ -1,6 +1,5 @@
 package com.sparta.deliveryminiproject.domain.category.repository;
 
-import com.sparta.deliveryminiproject.domain.category.dto.CategoryResponseDto;
 import com.sparta.deliveryminiproject.domain.category.entity.Category;
 import java.util.Optional;
 import java.util.UUID;

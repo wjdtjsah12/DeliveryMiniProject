@@ -1,12 +1,10 @@
 package com.sparta.deliveryminiproject.domain.region.service;
 
-import com.sparta.deliveryminiproject.domain.category.entity.Category;
 import com.sparta.deliveryminiproject.domain.region.dto.RegionRequestDto;
 import com.sparta.deliveryminiproject.domain.region.dto.RegionResponseDto;
 import com.sparta.deliveryminiproject.domain.region.entity.Region;
 import com.sparta.deliveryminiproject.domain.region.repository.RegionRepository;
 import com.sparta.deliveryminiproject.global.exception.ApiException;
-import jakarta.validation.Valid;
 import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

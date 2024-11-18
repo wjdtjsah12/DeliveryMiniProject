@@ -70,14 +70,13 @@ public class CategoryService {
   }
 
   // DB내 카테고리 이름 중복 체크 - 오버라이딩
-
   private void checkCategoryExist(String categoryName) {
     if (categoryRepository.findByCategoryName(categoryName).isPresent()) {
       throw new ApiException("이미 존재하는 카테고리명 입니다.", HttpStatus.BAD_REQUEST);
     }
   }
-  // DB내 카테고리 Id 체크 - 오버라이딩
 
+  // DB내 카테고리 Id 체크 - 오버라이딩
   private Category checkCategoryExist(UUID id) {
     return categoryRepository.findById(id).orElseThrow(() ->
         new ApiException("해당하는 카테고리가 존재하지 않습니다.", HttpStatus.BAD_REQUEST));

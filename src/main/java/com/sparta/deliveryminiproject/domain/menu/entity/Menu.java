@@ -15,6 +15,7 @@ import jakarta.persistence.Table;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "p_menu")
@@ -29,6 +30,7 @@ public class Menu extends BaseEntity {
   @Column(nullable = false)
   private String menuName;
 
+  @Setter
   private String description;
 
   private Integer price;

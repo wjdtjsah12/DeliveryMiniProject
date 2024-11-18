@@ -1,7 +1,6 @@
 package com.sparta.deliveryminiproject.domain.region.entity;
 
 import com.sparta.deliveryminiproject.domain.region.dto.RegionRequestDto;
-import com.sparta.deliveryminiproject.global.entity.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -15,7 +14,7 @@ import lombok.Setter;
 @Getter
 @Entity(name = "p_region")
 @NoArgsConstructor
-public class Region extends BaseEntity {
+public class Region {
 
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
@@ -27,6 +26,6 @@ public class Region extends BaseEntity {
   private String regionName;
 
   public Region(RegionRequestDto requestDto) {
-    this.regionName = requestDto.getRegionName();
+    this.regionName = regionName;
   }
 }
