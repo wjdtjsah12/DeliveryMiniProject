@@ -5,7 +5,7 @@
 - 사용자 / 인증 - `박송이`
 - 가게, 상품, 리뷰 - `김재현`
 - 카테고리, 지역, 배포, AI - `정선모`
-- 주문, 결제 - `이건`
+- 장바구니, 주문, 결제 - `이건`
 
 ## 서비스 구성 및 실행방법
 
@@ -162,6 +162,6 @@ DeliveryMiniProject
 ![JWT](https://img.shields.io/badge/JWT(0.11.5)-black?style=for-the-badge&logo=JSON%20web%20tokens)
 ![Redis](https://img.shields.io/badge/redis(7.2.6)-%23DD0031.svg?style=for-the-badge&logo=redis&logoColor=white)
 ![Postgres](https://img.shields.io/badge/postgresql(17.1)-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white)
-![Amazon S3](https://img.shields.io/badge/Amazon%20S3-FF6600?style=for-the-badge&logo=amazons3&logoColor=white)
+![AWS](https://img.shields.io/badge/AWS-%23FF9900.svg?style=for-the-badge&logo=amazon-aws&logoColor=white)
 ![Git](https://img.shields.io/badge/git-%23F05033.svg?style=for-the-badge&logo=git&logoColor=white)
 ![Notion](https://img.shields.io/badge/Notion-%23008DE4.svg?style=for-the-badge&logo=notion&logoColor=white)
