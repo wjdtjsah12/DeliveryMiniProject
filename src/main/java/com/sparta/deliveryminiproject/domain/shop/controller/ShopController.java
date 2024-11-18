@@ -9,7 +9,6 @@ import jakarta.validation.Valid;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
@@ -56,12 +55,12 @@ public class ShopController {
       @RequestParam String searchQuery,
       @RequestParam(defaultValue = "createdAt") String sortBy,
       @RequestParam(defaultValue = "DESC") Direction direction,
-      Pageable pageable) {
+      @RequestParam(defaultValue = "1") Integer page) {
 
-    Page<ShopResponseDto> page = shopService.getShopList(size, searchQuery, sortBy, direction,
-        pageable);
+    Page<ShopResponseDto> PagedShopResponseDto = shopService.getShopList(
+        size, searchQuery, sortBy, direction, page - 1);
 
-    return ResponseEntity.ok(page);
+    return ResponseEntity.ok(PagedShopResponseDto);
   }
 
   @Secured({Authority.OWNER, Authority.MASTER, Authority.MANAGER})
@@ -85,6 +84,20 @@ public class ShopController {
     ShopResponseDto shopResponseDto = shopService.deleteShop(shopId);
 
     return ResponseEntity.ok(shopResponseDto);
+  }
+
+  @GetMapping("/regions/{regionId}")
+  public ResponseEntity<Page<ShopResponseDto>> getShopListByRegion(
+      @PathVariable UUID regionId,
+      @RequestParam(defaultValue = "10") int size,
+      @RequestParam(defaultValue = "createdAt") String sortBy,
+      @RequestParam(defaultValue = "DESC") Direction direction,
+      @RequestParam(defaultValue = "1") Integer page) {
+
+    Page<ShopResponseDto> PagedShopResponseDto = shopService.getShopListByRegion(
+        regionId, size, sortBy, direction, page - 1);
+
+    return ResponseEntity.ok(PagedShopResponseDto);
   }
 
 
