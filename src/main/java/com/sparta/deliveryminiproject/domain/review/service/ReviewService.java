@@ -16,7 +16,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -60,15 +59,12 @@ public class ReviewService {
 
   public Page<ReviewResponseDto> getReviewList(
       UUID shopId, int size,
-      String sortBy, Direction direction, Pageable pageable) {
-
-    Sort sort = Sort.by(direction, sortBy);
-    pageable = PageRequest.of(pageable.getPageNumber(), size, sort);
+      String sortBy, Direction direction, Integer page) {
 
     // size를 10, 30, 50로 제한
     size = (size == 30 || size == 50) ? size : 10;  // size가 30이나 50이 아니면 10으로 고정
 
-    pageable = PageRequest.of(pageable.getPageNumber(), size, pageable.getSort());
+    Pageable pageable = PageRequest.of(page, size, direction, sortBy);
 
     shopRepository.findShopByIdOrElseThrow(shopId);
 

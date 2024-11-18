@@ -1,15 +1,18 @@
 package com.sparta.deliveryminiproject.domain.shop.entity;
 
+import com.sparta.deliveryminiproject.domain.region.entity.Region;
 import com.sparta.deliveryminiproject.domain.shop.dto.ShopRequestDto;
 import com.sparta.deliveryminiproject.domain.user.entity.User;
 import com.sparta.deliveryminiproject.global.entity.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
@@ -48,20 +51,25 @@ public class Shop extends BaseEntity {
   /**
    * 연관관계 맵핑
    */
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "user_id", nullable = false)
   private User user;
+
+  @OneToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "region_id", nullable = false)
+  private Region region;
 
 //  private Set<Category> categories; //shop_category 에서 받아와서 주입? 꼭 갖고있어야하는 필드인가
 
 
-  public Shop(ShopRequestDto shopRequestDto, User owner) {
+  public Shop(ShopRequestDto shopRequestDto, User owner, Region region) {
     this.shopName = shopRequestDto.getShopName();
     this.address = shopRequestDto.getAddress();
     this.user = owner;
+    this.region = region;
   }
 
-  public void update(ShopRequestDto shopRequestDto) {
+  public void update(ShopRequestDto shopRequestDto, Region region) {
     if (shopRequestDto.getShopName() != null) {
       this.shopName = shopRequestDto.getShopName();
     }
@@ -79,6 +87,9 @@ public class Shop extends BaseEntity {
     }
     if (shopRequestDto.getIsHidden() != null) {
       this.isHidden = shopRequestDto.getIsHidden();
+    }
+    if (region != null) {
+      this.region = region;
     }
   }
 }

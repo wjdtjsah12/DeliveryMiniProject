@@ -8,7 +8,6 @@ import com.sparta.deliveryminiproject.global.security.UserDetailsImpl;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
@@ -60,11 +59,10 @@ public class MenuController {
       @RequestParam String searchQuery,
       @RequestParam(defaultValue = "createdAt") String sortBy,
       @RequestParam(defaultValue = "DESC") Direction direction,
-      Pageable pageable) {
+      @RequestParam(defaultValue = "1") Integer page) {
 
-    Page<MenuResponseDto> pagedMenuDtoList = menuService.getMenuList(shopId, size, searchQuery,
-        sortBy, direction,
-        pageable);
+    Page<MenuResponseDto> pagedMenuDtoList = menuService.getMenuList(
+        shopId, size, searchQuery, sortBy, direction, page - 1);
 
     return ResponseEntity.ok(pagedMenuDtoList);
   }

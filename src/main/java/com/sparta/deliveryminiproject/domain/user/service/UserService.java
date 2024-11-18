@@ -1,6 +1,8 @@
 package com.sparta.deliveryminiproject.domain.user.service;
 
+import com.sparta.deliveryminiproject.domain.user.dto.RoleResponseDto;
 import com.sparta.deliveryminiproject.domain.user.dto.SigninRequestDto;
+import com.sparta.deliveryminiproject.domain.user.dto.SigninResponseDto;
 import com.sparta.deliveryminiproject.domain.user.dto.SignupRequestDto;
 import com.sparta.deliveryminiproject.domain.user.entity.User;
 import com.sparta.deliveryminiproject.domain.user.entity.UserRoleEnum;
@@ -11,6 +13,7 @@ import com.sparta.deliveryminiproject.global.security.RedisUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import java.util.Date;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -41,13 +44,13 @@ public class UserService {
     userRepository.save(user);
   }
 
-  public void signin(SigninRequestDto requestDto, HttpServletResponse response) {
+  public SigninResponseDto signin(SigninRequestDto requestDto, HttpServletResponse response) {
 
     String username = requestDto.getUsername();
     String password = requestDto.getPassword();
 
     User user = userRepository.findByUsername(username).orElseThrow(
-        () -> new IllegalArgumentException("Invalid Username")
+        () -> new ApiException("Invalid Username", HttpStatus.BAD_REQUEST)
     );
 
     if (!passwordEncoder.matches(password, user.getPassword())) {
@@ -56,28 +59,35 @@ public class UserService {
 
     String token = jwtUtil.createToken(username, user.getRole());
     jwtUtil.addJwtToCookie(token, response);
+
+    return new SigninResponseDto(user.getId());
   }
 
   public void signout(User user, HttpServletRequest request, HttpServletResponse response) {
 
     userRepository.findByUsername(user.getUsername())
-        .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        .orElseThrow(() -> new ApiException("User not found", HttpStatus.BAD_REQUEST));
 
     String token = jwtUtil.getTokenFromRequest(request);
-    redisUtil.addToBlackList(token);
+    Long expSec = jwtUtil.getUserInfoFromToken(jwtUtil.substringToken(token)).getExpiration()
+        .getTime();
+    Long nowSec = new Date().getTime();
+
+    redisUtil.addToBlackList(token, expSec - nowSec);
     jwtUtil.deleteJwtToCookie(request, response);
   }
 
   @Transactional
-  public void updateRole(User user, String role) {
+  public RoleResponseDto updateRole(User user, String role) {
     User savedUser = userRepository.findByUsername(user.getUsername())
-        .orElseThrow(() -> new IllegalArgumentException("User not found"));
-    UserRoleEnum roleEnum = UserRoleEnum.contains(role);
+        .orElseThrow(() -> new ApiException("User not found", HttpStatus.BAD_REQUEST));
 
+    UserRoleEnum roleEnum = UserRoleEnum.contains(role);
     if (roleEnum == null) {
       throw new ApiException("Not Valid Role", HttpStatus.BAD_REQUEST);
     }
 
     savedUser.setRole(roleEnum);
+    return new RoleResponseDto(savedUser.getId(), savedUser.getRole());
   }
 }
