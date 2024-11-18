@@ -9,6 +9,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface RegionRepository extends JpaRepository<Region, UUID> {
 
+  default Region findRegionByIdOrElseThrow(UUID id) {
+    return null;
+  }
+
   Optional<Object> findByRegionName(String regionName);
 
   Page<Region> findAllByRegionNameContainingAndIsDeleted(String searchQuery, Boolean isDeleted,
