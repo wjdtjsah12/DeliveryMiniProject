@@ -1,9 +1,11 @@
 package com.sparta.deliveryminiproject.domain.shop.repository;
 
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sparta.deliveryminiproject.domain.shop.entity.QShop;
 import com.sparta.deliveryminiproject.domain.shop.entity.Shop;
+import com.sparta.deliveryminiproject.global.sort.DynamicSortUtil;
 import jakarta.persistence.EntityManager;
 import java.util.List;
 import java.util.UUID;
@@ -31,26 +33,7 @@ public class ShopRepositoryImpl implements ShopRepositoryCustom {
         .and(shop.isHidden.isFalse());
 
     // 쿼리 실행
-    List<Shop> result = queryFactory
-        .selectFrom(shop)
-        .where(searchCondition)
-        .offset(pageable.getOffset())  // 조회할 데이터의 시작 위치 지정
-        .limit(pageable.getPageSize())  // 한 번에 조회할 데이터의 개수 지정
-        .fetch();
-
-    // 총 개수 (페이지네이션을 위한 total count)
-    Long total = queryFactory
-        .select(shop.count())
-        .from(shop)
-        .where(searchCondition)
-        .fetchOne();
-
-    if (total == null) {
-      total = 0L;
-    }
-
-    // 결과와 total count를 이용해 Page 객체를 생성하여 반환
-    return new PageImpl<>(result, pageable, total);
+    return getShops(pageable, shop, searchCondition);
 
   }
 
@@ -62,9 +45,17 @@ public class ShopRepositoryImpl implements ShopRepositoryCustom {
     BooleanExpression searchCondition = shop.region.id.eq(regionId).and(shop.isDeleted.isFalse())
         .and(shop.isHidden.isFalse());
 
+    return getShops(pageable, shop, searchCondition);
+  }
+
+  private Page<Shop> getShops(Pageable pageable, QShop shop, BooleanExpression searchCondition) {
     List<Shop> result = queryFactory
         .selectFrom(shop)
         .where(searchCondition)
+        .orderBy(
+            DynamicSortUtil.getDynamicSort(
+                    pageable.getSort(), shop.getType(), shop.getMetadata())
+                .toArray(OrderSpecifier[]::new))
         .offset(pageable.getOffset())
         .limit(pageable.getPageSize())
         .fetch();

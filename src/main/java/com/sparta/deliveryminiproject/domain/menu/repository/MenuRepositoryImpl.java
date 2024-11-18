@@ -1,9 +1,11 @@
 package com.sparta.deliveryminiproject.domain.menu.repository;
 
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sparta.deliveryminiproject.domain.menu.entity.Menu;
 import com.sparta.deliveryminiproject.domain.menu.entity.QMenu;
+import com.sparta.deliveryminiproject.global.sort.DynamicSortUtil;
 import jakarta.persistence.EntityManager;
 import java.util.List;
 import java.util.UUID;
@@ -34,6 +36,10 @@ public class MenuRepositoryImpl implements MenuRepositoryCustom {
         .selectFrom(menu)
         .where(searchCondition)
         .where(menu.shop.id.eq(shopId))
+        .orderBy(
+            DynamicSortUtil.getDynamicSort(
+                    pageable.getSort(), menu.getType(), menu.getMetadata())
+                .toArray(OrderSpecifier[]::new))
         .offset(pageable.getOffset())
         .limit(pageable.getPageSize())
         .fetch();
