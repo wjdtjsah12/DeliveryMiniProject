@@ -75,7 +75,7 @@ public class RegionService {
     }
   }
 
-  // DB내 카테고리 Id 체크 - 오버라이딩
+  // DB내 지역 Id 체크 - 오버라이딩
 
   private Region checkRegionExist(UUID id) {
     return regionRepository.findById(id).orElseThrow(() ->
