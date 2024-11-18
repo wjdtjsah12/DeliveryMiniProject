@@ -1,8 +1,10 @@
 package com.sparta.deliveryminiproject.domain.review.repository;
 
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sparta.deliveryminiproject.domain.review.entity.QReview;
 import com.sparta.deliveryminiproject.domain.review.entity.Review;
+import com.sparta.deliveryminiproject.global.sort.DynamicSortUtil;
 import jakarta.persistence.EntityManager;
 import java.util.List;
 import java.util.UUID;
@@ -27,6 +29,10 @@ public class ReviewRepositoryImpl implements ReviewRepositoryCustom {
         .selectFrom(review)
         .where(review.isDeleted.isFalse())
         .where(review.shop.id.eq(shopId))
+        .orderBy(
+            DynamicSortUtil.getDynamicSort(
+                    pageable.getSort(), review.getType(), review.getMetadata())
+                .toArray(OrderSpecifier[]::new))
         .offset(pageable.getOffset())
         .limit(pageable.getPageSize())
         .fetch();

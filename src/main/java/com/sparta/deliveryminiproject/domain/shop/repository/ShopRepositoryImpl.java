@@ -1,9 +1,11 @@
 package com.sparta.deliveryminiproject.domain.shop.repository;
 
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sparta.deliveryminiproject.domain.shop.entity.QShop;
 import com.sparta.deliveryminiproject.domain.shop.entity.Shop;
+import com.sparta.deliveryminiproject.global.sort.DynamicSortUtil;
 import jakarta.persistence.EntityManager;
 import java.util.List;
 import java.util.UUID;
@@ -50,6 +52,10 @@ public class ShopRepositoryImpl implements ShopRepositoryCustom {
     List<Shop> result = queryFactory
         .selectFrom(shop)
         .where(searchCondition)
+        .orderBy(
+            DynamicSortUtil.getDynamicSort(
+                    pageable.getSort(), shop.getType(), shop.getMetadata())
+                .toArray(OrderSpecifier[]::new))
         .offset(pageable.getOffset())
         .limit(pageable.getPageSize())
         .fetch();
