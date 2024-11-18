@@ -8,7 +8,6 @@ import lombok.Data;
 @Data
 public class OrderSearchCondition {
 
-  private String category;
   private OrderType orderType;
   private LocalDate startAt;
   private LocalDate endAt;
