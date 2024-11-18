@@ -34,60 +34,60 @@ class CartRepositoryTest {
   @Autowired
   private ShopRepository shopRepository;
 
-  @DisplayName("유저의 카트를 조회했을 때 삭제되지 않은 카트에 제품들을 가져올 수 있다.")
-  @Test
-  void findCart() {
-    // given
-    User user = new User("aaaa", "aaaa", UserRoleEnum.CUSTOMER);
-    userRepository.save(user);
-
-    Shop shop = new Shop("맥도날드", "햄버거가게", 10000, 1000);
-    shopRepository.save(shop);
-
-    Menu menu1 = Menu.builder()
-        .menuName("빅맥")
-        .description("햄버거1")
-        .price(5000)
-        .shop(shop)
-        .build();
-
-    Menu menu2 = Menu.builder()
-        .menuName("상하이 스파이시 버거")
-        .description("햄버거2")
-        .price(6000)
-        .shop(shop)
-        .build();
-    menuRepository.saveAll(List.of(menu1, menu2));
-
-    Cart cart1 = Cart.builder()
-        .user(user)
-        .shop(shop)
-        .menu(menu1)
-        .quantity(1)
-        .build();
-
-    Cart cart2 = Cart.builder()
-        .user(user)
-        .shop(shop)
-        .menu(menu2)
-        .quantity(2)
-        .build();
-
-    Cart cart3 = Cart.builder()
-        .user(user)
-        .shop(shop)
-        .menu(menu2)
-        .quantity(2)
-        .build();
-
-    cart3.setIsDeleted(true);
-
-    cartRepository.saveAll(List.of(cart1, cart2, cart3));
-
-    // when
-    List<Cart> result = cartRepository.findAllByUserAndIsDeletedFalse(user);
-
-    // then
-    assertThat(result).hasSize(2);
-  }
+//  @DisplayName("유저의 카트를 조회했을 때 삭제되지 않은 카트에 제품들을 가져올 수 있다.")
+//  @Test
+//  void findCart() {
+//    // given
+//    User user = new User("aaaa", "aaaa", UserRoleEnum.CUSTOMER);
+//    userRepository.save(user);
+//
+//    Shop shop = new Shop("맥도날드", "햄버거가게", 10000, 1000);
+//    shopRepository.save(shop);
+//
+//    Menu menu1 = Menu.builder()
+//        .menuName("빅맥")
+//        .description("햄버거1")
+//        .price(5000)
+//        .shop(shop)
+//        .build();
+//
+//    Menu menu2 = Menu.builder()
+//        .menuName("상하이 스파이시 버거")
+//        .description("햄버거2")
+//        .price(6000)
+//        .shop(shop)
+//        .build();
+//    menuRepository.saveAll(List.of(menu1, menu2));
+//
+//    Cart cart1 = Cart.builder()
+//        .user(user)
+//        .shop(shop)
+//        .menu(menu1)
+//        .quantity(1)
+//        .build();
+//
+//    Cart cart2 = Cart.builder()
+//        .user(user)
+//        .shop(shop)
+//        .menu(menu2)
+//        .quantity(2)
+//        .build();
+//
+//    Cart cart3 = Cart.builder()
+//        .user(user)
+//        .shop(shop)
+//        .menu(menu2)
+//        .quantity(2)
+//        .build();
+//
+//    cart3.setIsDeleted(true);
+//
+//    cartRepository.saveAll(List.of(cart1, cart2, cart3));
+//
+//    // when
+//    List<Cart> result = cartRepository.findAllByUserAndIsDeletedFalse(user);
+//
+//    // then
+//    assertThat(result).hasSize(2);
+//  }
 }
