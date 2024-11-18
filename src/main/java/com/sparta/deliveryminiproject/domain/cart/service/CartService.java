@@ -1,6 +1,6 @@
 package com.sparta.deliveryminiproject.domain.cart.service;
 
-import com.sparta.deliveryminiproject.domain.cart.dto.CartMenuResponseDto;
+import com.sparta.deliveryminiproject.domain.cart.dto.CartInfo;
 import com.sparta.deliveryminiproject.domain.cart.dto.CartRequestDto;
 import com.sparta.deliveryminiproject.domain.cart.dto.CartResponseDto;
 import com.sparta.deliveryminiproject.domain.cart.entity.Cart;
@@ -60,10 +60,10 @@ public class CartService {
 
     Shop shop = cartList.get(0).getShop();
 
-    List<CartMenuResponseDto> menuResponseList = new ArrayList<>();
+    List<CartInfo> menuResponseList = new ArrayList<>();
     int totalMenuPrice = cartList.stream()
         .map(cart -> {
-          CartMenuResponseDto dto = CartMenuResponseDto.from(cart);
+          CartInfo dto = CartInfo.from(cart);
           menuResponseList.add(dto);
           return dto.getPrice();
         })
