@@ -49,6 +49,11 @@ public class OrderService {
 
     order.calculateAndSetTotalPrice();
 
+    if (order.getOrderType().equals(OrderType.DELIVERY_ORDER)
+        && order.getShop().getMinDeliveryPrice() >= order.getTotalPrice()) {
+      throw new ApiException("총 주문 금액이 최소 주문 금액에 도달하지 않았습니다.", HttpStatus.BAD_REQUEST);
+    }
+
     return orderRepository.save(order);
   }
 
