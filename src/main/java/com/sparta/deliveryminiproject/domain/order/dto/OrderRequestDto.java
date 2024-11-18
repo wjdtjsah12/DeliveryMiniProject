@@ -2,6 +2,7 @@ package com.sparta.deliveryminiproject.domain.order.dto;
 
 import com.sparta.deliveryminiproject.domain.order.entity.Order;
 import com.sparta.deliveryminiproject.domain.order.entity.OrderStatus;
+import com.sparta.deliveryminiproject.domain.user.entity.User;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -19,12 +20,13 @@ public class OrderRequestDto {
     this.phoneNumber = phoneNumber;
   }
 
-  public Order toEntity(OrderRequestDto orderRequestDto) {
+  public Order toEntity(User user, OrderRequestDto orderRequestDto) {
     return Order.builder()
         .requests(orderRequestDto.getRequests())
         .address(orderRequestDto.getAddress())
         .phoneNumber(orderRequestDto.getPhoneNumber())
         .orderStatus(OrderStatus.PENDING_PAYMENT)
+        .user(user)
         .build();
   }
 }
