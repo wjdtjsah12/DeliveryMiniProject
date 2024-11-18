@@ -3,12 +3,10 @@ package com.sparta.deliveryminiproject.domain.review.repository;
 import com.sparta.deliveryminiproject.domain.review.entity.Review;
 import com.sparta.deliveryminiproject.global.exception.ApiException;
 import java.util.UUID;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.http.HttpStatus;
 
-public interface ReviewRepository extends JpaRepository<Review, UUID> {
+public interface ReviewRepository extends JpaRepository<Review, UUID>, ReviewRepositoryCustom {
 
   default Review findReviewByIdOrElseThrow(UUID id) {
     return findById(id).orElseThrow(
@@ -16,5 +14,4 @@ public interface ReviewRepository extends JpaRepository<Review, UUID> {
     );
   }
 
-  Page<Review> findByShopIdAndIsDeletedFalse(UUID shopId, Pageable pageable);
 }
