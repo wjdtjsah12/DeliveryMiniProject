@@ -103,6 +103,10 @@ public class ShopService {
       region = regionRepository.findById(shopRequestDto.getRegionId()).orElse(null);
     }
 
+    if (shopRequestDto.getCategoryIdSet() != null) {
+      shopCategoryService.updateCategoryNameSet(shop, shopRequestDto.getCategoryIdSet());
+    }
+
     shop.update(shopRequestDto, region);
 
     Set<String> categoryNameSet = shopCategoryService.getCategoryNameSet(shopId);
