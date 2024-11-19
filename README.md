@@ -99,10 +99,39 @@ DeliveryMiniProject
 ### 실행 방법
 
 1. /resources/application.properties
-
-    ```
-    
-    ```
+   ```
+      # local DB Setting
+      #spring.datasource.driverClassName=org.postgresql.Driver
+      #spring.datasource.url=jdbc:postgresql://localhost:5432/{dbname}
+      #spring.datasource.username={username}
+      #spring.datasource.password={password}
+      
+      # Release DB Setting
+      spring.datasource.driverClassName=org.postgresql.Driver
+      spring.datasource.url=jdbc:postgresql://{domain}:5432/{dbname}
+      spring.datasource.username={username}
+      spring.datasource.password={password}
+   
+      #spring.jpa.properties.hibernate.default_schema = test
+      # maximum connection pool size
+      spring.datasource.hikari.maximum-pool-size=4
+   
+      spring.jpa.hibernate.ddl-auto=update
+   
+      spring.jpa.properties.hibernate.show_sql=true
+      spring.jpa.properties.hibernate.format_sql=true
+      spring.jpa.properties.hibernate.use_sql_comments=true
+   
+      spring.data.redis.host=localhost
+      spring.data.redis.port=6379
+      spring.data.redis.timeout=6000
+   
+      # Ai API Setting
+      gemini.api.url=https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent
+      gemini.api.key={your.key}
+   
+      jwt.secret.key={jwt.secret.key}
+   ```
 
 2. 레포지토리 복제
 
@@ -127,7 +156,7 @@ DeliveryMiniProject
 
 ### 인프라 구조
 
-![스크린샷 2024-11-18 오후 4 30 24](https://github.com/user-attachments/assets/c7dbd99c-cf67-42eb-b09e-229417628ceb)
+![image](https://github.com/user-attachments/assets/e6a2c095-4b90-468f-a92b-a8b1ed4e7a9a)
 
 ## 프로젝트 목적/상세
 
@@ -143,7 +172,7 @@ DeliveryMiniProject
 
 ### 프로젝트 상세
 
-- 용자 관리
+- 사용자 관리
 - 장바구니 관리
 - 주문 관리
 - 상점 관리
@@ -151,7 +180,7 @@ DeliveryMiniProject
 - 리뷰 관리
 - 카테고리 관리
 - 지역 관리
-- Gimini 연동
+- Gemini 연동
 
 ## 기술 스택
 
@@ -165,3 +194,11 @@ DeliveryMiniProject
 ![AWS](https://img.shields.io/badge/AWS-%23FF9900.svg?style=for-the-badge&logo=amazon-aws&logoColor=white)
 ![Git](https://img.shields.io/badge/git-%23F05033.svg?style=for-the-badge&logo=git&logoColor=white)
 ![Notion](https://img.shields.io/badge/Notion-%23008DE4.svg?style=for-the-badge&logo=notion&logoColor=white)
+
+## ERD Docs
+
+- https://www.erdcloud.com/d/LHCEMwe9PN5qfokkg
+
+## API Docs
+
+- https://www.notion.so/teamsparta/26-S-A-c91495224b444024a68a65ed4b92223c
