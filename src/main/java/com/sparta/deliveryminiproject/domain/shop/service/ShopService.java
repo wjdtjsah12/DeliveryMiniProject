@@ -98,7 +98,14 @@ public class ShopService {
 
     ShopService.validateShopOwner(user, shop);
 
-    Region region = regionRepository.findById(shopRequestDto.getRegionId()).orElse(null);
+    Region region = null;
+    if(shopRequestDto.getRegionId() != null) {
+      region = regionRepository.findById(shopRequestDto.getRegionId()).orElse(null);
+    }
+
+    if (shopRequestDto.getCategoryIdSet() != null) {
+      shopCategoryService.updateCategoryNameSet(shop, shopRequestDto.getCategoryIdSet());
+    }
 
     shop.update(shopRequestDto, region);
 

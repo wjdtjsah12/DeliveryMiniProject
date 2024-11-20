@@ -55,4 +55,10 @@ public class ShopCategoryService {
         .collect(Collectors.toSet());
   }
 
+  public void updateCategoryNameSet(Shop shop, Set<UUID> categoryIdSet) {
+
+    shopCategoryRepository.deleteAll(shopCategoryRepository.findAllByShopId(shop.getId()));
+
+    saveShopCategory(shop, categoryIdSet);
+  }
 }
